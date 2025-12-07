@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "902859538080",
+    "project_id": "chelsy-restaurant",
+    "storage_bucket": "chelsy-restaurant.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:902859538080:android:02e578402b41bcab4953c5",
+        "android_client_info": {
+          "package_name": "com.example.chelsy_restaurant"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjt_FK_f5skNdJaGR46LPiRgzULIBOUFo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
