@@ -40,7 +40,9 @@ class ApiService extends GetxService {
           return handler.next(options);
         },
         onResponse: (response, handler) {
-          AppLogger.debug('Response: ${response.statusCode} ${response.requestOptions.path}');
+          AppLogger.debug(
+            'Response: ${response.statusCode} ${response.requestOptions.path}',
+          );
           return handler.next(response);
         },
         onError: (error, handler) {
@@ -49,11 +51,11 @@ class ApiService extends GetxService {
             error,
           );
 
-          // Handle 401 Unauthorized - Clear token and redirect to login
+          // Handle 401 Unauthorized - netoyage du token et redirection vers le login
           if (error.response?.statusCode == 401) {
             _storageService.removeToken();
             _storageService.setLoggedIn(false);
-            // You can add navigation to login here if needed
+            // ici on peut ajouter une navigation specialiser mais pas inportant
           }
 
           return handler.next(error);
@@ -199,5 +201,3 @@ class ApiService extends GetxService {
     return errorMessage;
   }
 }
-
-

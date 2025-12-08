@@ -1,8 +1,9 @@
 class AppRoutes {
   // Initial
   static const String initial = '/';
+  static const String splash = '/splash';
   static const String onboarding = '/onboarding';
-  
+
   // Auth
   static const String login = '/login';
   static const String register = '/register';
@@ -11,11 +12,10 @@ class AppRoutes {
   static const String resetPassword = '/reset-password';
 
   // Main
-  static const String main = '/main';
+  static const String home = '/home';
   static const String editProfile = '/edit-profile';
   static const String changePassword = '/change-password';
   static const String addAddress = '/add-address';
-  static const String home = '/home';
   static const String dishDetail = '/dish-detail';
   static const String cart = '/cart';
   static const String checkout = '/checkout';
@@ -36,5 +36,3 @@ class AppRoutes {
   static const String notifications = '/notifications';
   static const String restaurantInfo = '/restaurant-info';
 }
-
-
