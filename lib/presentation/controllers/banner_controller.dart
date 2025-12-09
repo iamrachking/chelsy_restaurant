@@ -27,4 +27,3 @@ class BannerController extends GetxController {
     }
   }
 }
-
