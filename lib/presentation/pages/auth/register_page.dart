@@ -50,7 +50,7 @@ class _RegisterPageState extends State<RegisterPage> {
       );
 
       if (success) {
-        Get.offAllNamed(AppRoutes.home);
+        Get.offAllNamed(AppRoutes.main);
       }
     }
   }

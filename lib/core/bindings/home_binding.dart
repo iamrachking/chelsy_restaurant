@@ -12,14 +12,14 @@ import 'package:chelsy_restaurant/presentation/controllers/cart_controller.dart'
 class HomeBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => ApiService());
-    Get.lazyPut(() => DishRepository());
-    Get.lazyPut(() => DishController());
-    Get.lazyPut(() => CartRepository());
-    Get.lazyPut(() => CartController());
-    Get.lazyPut(() => BannerRepository());
-    Get.lazyPut(() => BannerController());
-    Get.lazyPut(() => FavoriteRepository());
-    Get.lazyPut(() => FavoriteController());
+    Get.put(ApiService(), permanent: true);
+    Get.put(DishRepository(), permanent: true);
+    Get.put(CartRepository(), permanent: true);
+    Get.put(BannerRepository(), permanent: true);
+    Get.put(FavoriteRepository(), permanent: true);
+    Get.put(DishController(), permanent: true);
+    Get.put(CartController(), permanent: true);
+    Get.put(BannerController(), permanent: true);
+    Get.put(FavoriteController(), permanent: true);
   }
 }

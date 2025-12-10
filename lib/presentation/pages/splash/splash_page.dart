@@ -17,7 +17,7 @@ class _SplashPageState extends State<SplashPage>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
-  // late Animation<double> _rotationAnimation;
+
   final AuthController _authController = Get.find<AuthController>();
   final StorageService _storageService = Get.find<StorageService>();
 
@@ -25,13 +25,14 @@ class _SplashPageState extends State<SplashPage>
   void initState() {
     super.initState();
     _setupAnimations();
+    _animationController.forward(); // joue l’animation une seule fois
     _checkAuthAndNavigate();
   }
 
   void _setupAnimations() {
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 2),
+      duration: const Duration(milliseconds: 1500),
     );
 
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -41,18 +42,10 @@ class _SplashPageState extends State<SplashPage>
     _scaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.elasticOut),
     );
-
-    // _rotationAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-    //   CurvedAnimation(parent: _animationController, curve: Curves.linear),
-    // );
-
-    _animationController.repeat();
   }
 
   Future<void> _checkAuthAndNavigate() async {
-    await Future.delayed(
-      const Duration(seconds: 3),
-    ); 
+    await Future.delayed(const Duration(seconds: 2));
 
     final hasSeenOnboarding = _storageService.hasSeenOnboarding();
     await _authController.checkAuthStatus();
@@ -92,7 +85,6 @@ class _SplashPageState extends State<SplashPage>
                     width: 80,
                     height: 80,
                   ),
-
                   const SizedBox(width: 16),
                   Text(
                     'Welcome',

@@ -39,7 +39,7 @@ class AllDishesPage extends StatelessWidget {
               childAspectRatio: 0.90,
             ),
             itemCount:
-            dishController.dishes.length +
+                dishController.dishes.length +
                 (dishController.hasMore.value ? 1 : 0),
             itemBuilder: (context, index) {
               if (index < dishController.dishes.length) {

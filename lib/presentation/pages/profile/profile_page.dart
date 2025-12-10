@@ -42,17 +42,17 @@ class ProfilePage extends StatelessWidget {
                               context,
                             ).colorScheme.primary,
                             backgroundImage:
-                            user.avatar != null && user.avatar!.isNotEmpty
+                                user.avatar != null && user.avatar!.isNotEmpty
                                 ? CachedNetworkImageProvider(user.avatar!)
                                 : null,
                             child: user.avatar == null || user.avatar!.isEmpty
                                 ? Text(
-                              user.name.substring(0, 1).toUpperCase(),
-                              style: const TextStyle(
-                                fontSize: 40,
-                                color: Colors.white,
-                              ),
-                            )
+                                    user.name.substring(0, 1).toUpperCase(),
+                                    style: const TextStyle(
+                                      fontSize: 40,
+                                      color: Colors.white,
+                                    ),
+                                  )
                                 : null,
                           ),
                           Positioned(
@@ -239,12 +239,12 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget _buildMenuItem(
-      BuildContext context, {
-        required IconData icon,
-        required String title,
-        required VoidCallback onTap,
-        Color? textColor,
-      }) {
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+    Color? textColor,
+  }) {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(

@@ -12,7 +12,7 @@ class FavoritesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final FavoriteController favoriteController =
-    Get.find<FavoriteController>();
+        Get.find<FavoriteController>();
 
     return Scaffold(
       appBar: AppBar(title: const Text('Mes favoris')),
@@ -27,7 +27,7 @@ class FavoritesPage extends StatelessWidget {
             icon: Icons.favorite_outline,
             title: 'Aucun favori',
             message:
-            'Ajoutez des plats à vos favoris pour les retrouver facilement',
+                'Ajoutez des plats à vos favoris pour les retrouver facilement',
             buttonText: 'Explorer le menu',
             onButtonTap: () {
               Get.offAllNamed(AppRoutes.home);

@@ -51,7 +51,7 @@ class _RegisterFormState extends State<RegisterForm> {
       );
 
       if (success) {
-        Get.offAllNamed(AppRoutes.home);
+        Get.offAllNamed(AppRoutes.main);
       }
     }
   }

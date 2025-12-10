@@ -55,7 +55,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate:
-      _selectedDate ??
+          _selectedDate ??
           DateTime.now().subtract(const Duration(days: 365 * 25)),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
@@ -153,7 +153,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   keyboardType: TextInputType.phone,
                   prefixIcon: const Icon(Icons.phone_outlined),
                   validator: (value) =>
-                  value?.isEmpty ?? true ? null : Validators.phone(value),
+                      value?.isEmpty ?? true ? null : Validators.phone(value),
                   textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 16),
@@ -204,7 +204,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
                 const SizedBox(height: 32),
                 Obx(
-                      () => CustomButton(
+                  () => CustomButton(
                     text: 'Enregistrer',
                     onPressed: _profileController.isLoading.value
                         ? null

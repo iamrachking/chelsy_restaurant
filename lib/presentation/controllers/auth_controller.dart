@@ -4,6 +4,7 @@ import 'package:chelsy_restaurant/data/repositories/auth_repository.dart';
 import 'package:chelsy_restaurant/data/models/user_model.dart';
 import 'package:chelsy_restaurant/core/services/storage_service.dart';
 import 'package:chelsy_restaurant/core/utils/app_logger.dart';
+import 'package:flutter/material.dart';
 
 class AuthController extends GetxController {
   final AuthRepository _authRepository = Get.find<AuthRepository>();
@@ -33,6 +34,70 @@ class AuthController extends GetxController {
     }
   }
 
+  // Récupérer les infos utilisateur depuis l'API
+  Future<void> getCurrentUser() async {
+    try {
+      final user = await _authRepository.getCurrentUser();
+      if (user != null) {
+        currentUser.value = user;
+      }
+    } catch (e) {
+      AppLogger.error('Get current user error', e);
+    }
+  }
+
+  // Reset password
+  Future<bool> resetPassword({
+    required String email,
+    required String token,
+    required String password,
+    required String passwordConfirmation,
+  }) async {
+    try {
+      isLoading.value = true;
+      final result = await _authRepository.resetPassword(
+        email: email,
+        token: token,
+        password: password,
+        passwordConfirmation: passwordConfirmation,
+      );
+
+      if (result['success'] == true) {
+        // Snackbar succès
+        Get.snackbar(
+          'Succès',
+          result['message'] ?? 'Mot de passe réinitialisé avec succès',
+          snackPosition: SnackPosition.TOP,
+
+          colorText: Colors.white,
+          duration: const Duration(seconds: 2),
+        );
+        return true;
+      } else {
+        Get.snackbar(
+          'Erreur',
+          result['message'] ?? 'Erreur lors de la réinitialisation',
+          snackPosition: SnackPosition.TOP,
+
+          colorText: Colors.white,
+        );
+        return false;
+      }
+    } catch (e) {
+      AppLogger.error('Reset password error', e);
+      Get.snackbar(
+        'Erreur',
+        'Une erreur est survenue',
+        snackPosition: SnackPosition.TOP,
+
+        colorText: Colors.white,
+      );
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   // Register
   Future<bool> register({
     required String firstname,
@@ -56,7 +121,6 @@ class AuthController extends GetxController {
       if (result['success'] == true) {
         currentUser.value = result['user'] as UserModel;
         isLoggedIn.value = true;
-        // Register FCM token
         final notificationService = Get.find<NotificationService>();
         await notificationService.getFCMToken();
         AppLogger.info('Registration successful');
@@ -65,12 +129,21 @@ class AuthController extends GetxController {
         Get.snackbar(
           'Erreur',
           result['message'] ?? 'Erreur lors de l\'inscription',
+          snackPosition: SnackPosition.TOP,
+
+          colorText: Colors.white,
         );
         return false;
       }
     } catch (e) {
       AppLogger.error('Register error', e);
-      Get.snackbar('Erreur', 'Une erreur est survenue');
+      Get.snackbar(
+        'Erreur',
+        'Une erreur est survenue',
+        snackPosition: SnackPosition.TOP,
+
+        colorText: Colors.white,
+      );
       return false;
     } finally {
       isLoading.value = false;
@@ -89,7 +162,6 @@ class AuthController extends GetxController {
       if (result['success'] == true) {
         currentUser.value = result['user'] as UserModel;
         isLoggedIn.value = true;
-        // Register FCM token
         final notificationService = Get.find<NotificationService>();
         await notificationService.getFCMToken();
         AppLogger.info('Login successful');
@@ -98,12 +170,21 @@ class AuthController extends GetxController {
         Get.snackbar(
           'Erreur',
           result['message'] ?? 'Email ou mot de passe incorrect',
+          snackPosition: SnackPosition.TOP,
+
+          colorText: Colors.white,
         );
         return false;
       }
     } catch (e) {
       AppLogger.error('Login error', e);
-      Get.snackbar('Erreur', 'Une erreur est survenue');
+      Get.snackbar(
+        'Erreur',
+        'Une erreur est survenue',
+        snackPosition: SnackPosition.TOP,
+
+        colorText: Colors.white,
+      );
       return false;
     } finally {
       isLoading.value = false;
@@ -114,7 +195,6 @@ class AuthController extends GetxController {
   Future<void> logout() async {
     try {
       isLoading.value = true;
-      // Unregister FCM token
       final notificationService = Get.find<NotificationService>();
       await notificationService.unregisterToken();
       await _authRepository.logout();
@@ -128,33 +208,39 @@ class AuthController extends GetxController {
     }
   }
 
-  // Get current user
-  Future<void> getCurrentUser() async {
-    try {
-      final user = await _authRepository.getCurrentUser();
-      if (user != null) {
-        currentUser.value = user;
-      }
-    } catch (e) {
-      AppLogger.error('Get current user error', e);
-    }
-  }
-
   // Forgot password
   Future<bool> forgotPassword(String email) async {
     try {
       isLoading.value = true;
       final result = await _authRepository.forgotPassword(email);
       if (result['success'] == true) {
-        Get.snackbar('Succès', result['message'] ?? 'Email envoyé');
+        Get.snackbar(
+          'Succès',
+          result['message'] ?? 'Email envoyé',
+          snackPosition: SnackPosition.TOP,
+
+          colorText: Colors.white,
+        );
         return true;
       } else {
-        Get.snackbar('Erreur', result['message'] ?? 'Erreur lors de l\'envoi');
+        Get.snackbar(
+          'Erreur',
+          result['message'] ?? 'Erreur lors de l\'envoi',
+          snackPosition: SnackPosition.TOP,
+
+          colorText: Colors.white,
+        );
         return false;
       }
     } catch (e) {
       AppLogger.error('Forgot password error', e);
-      Get.snackbar('Erreur', 'Une erreur est survenue');
+      Get.snackbar(
+        'Erreur',
+        'Une erreur est survenue',
+        snackPosition: SnackPosition.TOP,
+
+        colorText: Colors.white,
+      );
       return false;
     } finally {
       isLoading.value = false;
@@ -162,39 +248,53 @@ class AuthController extends GetxController {
   }
 
   // Reset password
-  Future<bool> resetPassword({
-    required String email,
-    required String token,
-    required String password,
-    required String passwordConfirmation,
-  }) async {
-    try {
-      isLoading.value = true;
-      final result = await _authRepository.resetPassword(
-        email: email,
-        token: token,
-        password: password,
-        passwordConfirmation: passwordConfirmation,
-      );
-      if (result['success'] == true) {
-        Get.snackbar(
-          'Succès',
-          result['message'] ?? 'Mot de passe réinitialisé',
-        );
-        return true;
-      } else {
-        Get.snackbar(
-          'Erreur',
-          result['message'] ?? 'Erreur lors de la réinitialisation',
-        );
-        return false;
-      }
-    } catch (e) {
-      AppLogger.error('Reset password error', e);
-      Get.snackbar('Erreur', 'Une erreur est survenue');
-      return false;
-    } finally {
-      isLoading.value = false;
-    }
-  }
+  // Future<bool> resetPassword({
+  //   required String email,
+  //   required String token,
+  //   required String password,
+  //   required String passwordConfirmation,
+  // }) async {
+  //   try {
+  //     isLoading.value = true;
+  //     final result = await _authRepository.resetPassword(
+  //       email: email,
+  //       token: token,
+  //       password: password,
+  //       passwordConfirmation: passwordConfirmation,
+  //     );
+
+  //     if (result['success'] == true) {
+  //       Get.snackbar(
+  //         'Succès',
+  //         result['message'] ?? 'Mot de passe réinitialisé avec succès',
+  //         snackPosition: SnackPosition.TOP,
+  //
+  //         colorText: Colors.white,
+  //         duration: const Duration(seconds: 2),
+  //       );
+  //       return true;
+  //     } else {
+  //       Get.snackbar(
+  //         'Erreur',
+  //         result['message'] ?? 'Erreur lors de la réinitialisation',
+  //         snackPosition: SnackPosition.TOP,
+  //
+  //         colorText: Colors.white,
+  //       );
+  //       return false;
+  //     }
+  //   } catch (e) {
+  //     AppLogger.error('Reset password error', e);
+  //     Get.snackbar(
+  //       'Erreur',
+  //       'Une erreur est survenue',
+  //       snackPosition: SnackPosition.TOP,
+  //
+  //       colorText: Colors.white,
+  //     );
+  //     return false;
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
 }

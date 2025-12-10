@@ -45,7 +45,7 @@ class _DishDetailPageState extends State<DishDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Obx(
-            () {
+        () {
           if (_dishController.isLoading.value && _dishController.selectedDish.value == null) {
             return const LoadingWidget();
           }
@@ -100,9 +100,9 @@ class _DishDetailPageState extends State<DishDetailPage> {
                           Text(
                             DateFormatter.formatCurrency(dish.finalPrice),
                             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
+                                  color: AppColors.primary,
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                         ],
                       ),
@@ -200,10 +200,10 @@ class _DishDetailPageState extends State<DishDetailPage> {
                             icon: const Icon(Icons.remove_circle_outline),
                             onPressed: _quantity > 1
                                 ? () {
-                              setState(() {
-                                _quantity--;
-                              });
-                            }
+                                    setState(() {
+                                      _quantity--;
+                                    });
+                                  }
                                 : null,
                           ),
                           Text(
@@ -252,3 +252,4 @@ class _DishDetailPageState extends State<DishDetailPage> {
     );
   }
 }
+

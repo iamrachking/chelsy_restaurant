@@ -209,7 +209,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 const SizedBox(height: 40),
                 // Confirm button
                 Obx(
-                      () => CustomButton(
+                  () => CustomButton(
                     text: 'Confirmer',
                     onPressed: _profileController.isLoading.value
                         ? null

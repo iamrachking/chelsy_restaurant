@@ -4,6 +4,7 @@ import 'package:chelsy_restaurant/core/utils/validators.dart';
 import 'package:chelsy_restaurant/presentation/controllers/auth_controller.dart';
 import 'package:chelsy_restaurant/presentation/widgets/custom_button.dart';
 import 'package:chelsy_restaurant/presentation/widgets/custom_text_field.dart';
+import 'reset_password_page.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -25,9 +26,23 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   Future<void> _handleForgotPassword() async {
     if (_formKey.currentState!.validate()) {
-      final success = await _authController.forgotPassword(_emailController.text.trim());
+      final success = await _authController.forgotPassword(
+        _emailController.text.trim(),
+      );
       if (success) {
-        Get.back();
+        Get.snackbar(
+          'Succès',
+          'Email envoyé ! Vérifiez votre boîte mail pour le token.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+
+        // Naviguer vers ResetPasswordPage avec l’email pré-rempli
+        Get.to(
+          () => const ResetPasswordPage(),
+          arguments: {'email': _emailController.text.trim()},
+        );
       }
     }
   }
@@ -35,9 +50,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Mot de passe oublié'),
-      ),
+      appBar: AppBar(title: const Text('Mot de passe oublié')),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -60,10 +73,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey[600],
-                      ),
+                  'Entrez votre adresse email et nous vous enverrons un token pour réinitialiser votre mot de passe',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 48),
@@ -81,7 +94,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 Obx(
                   () => CustomButton(
                     text: 'Envoyer',
-                    onPressed: _authController.isLoading.value ? null : _handleForgotPassword,
+                    onPressed: _authController.isLoading.value
+                        ? null
+                        : _handleForgotPassword,
                     isLoading: _authController.isLoading.value,
                     icon: Icons.send,
                   ),
@@ -94,4 +109,3 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     );
   }
 }
-

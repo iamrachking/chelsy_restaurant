@@ -75,13 +75,13 @@ class _HomePageState extends State<HomePage> {
                     ),
                     child: user?.avatar != null
                         ? ClipOval(
-                      child: CachedNetworkImage(
-                        imageUrl: user!.avatar!,
-                        fit: BoxFit.cover,
-                        errorWidget: (context, url, error) =>
-                        const Icon(Icons.person),
-                      ),
-                    )
+                            child: CachedNetworkImage(
+                              imageUrl: user!.avatar!,
+                              fit: BoxFit.cover,
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.person),
+                            ),
+                          )
                         : const Icon(Icons.person, color: AppColors.primary),
                   ),
                 );
@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> {
               centerTitle: true,
               actions: [
                 Obx(
-                      () => Stack(
+                  () => Stack(
                     children: [
                       IconButton(
                         icon: const Icon(
@@ -348,11 +348,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildMenuButton(
-      BuildContext context, {
-        required IconData icon,
-        required String label,
-        required VoidCallback onTap,
-      }) {
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -397,9 +397,9 @@ class _HomePageState extends State<HomePage> {
                 color: AppColors.primary.withOpacity(0.1),
                 image: category.image != null
                     ? DecorationImage(
-                  image: NetworkImage(category.image!),
-                  fit: BoxFit.cover,
-                )
+                        image: NetworkImage(category.image!),
+                        fit: BoxFit.cover,
+                      )
                     : null,
               ),
               child: category.image == null

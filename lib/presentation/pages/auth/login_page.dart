@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       if (success) {
-        Get.offAllNamed(AppRoutes.home);
+        Get.offAllNamed(AppRoutes.main);
       }
     }
   }

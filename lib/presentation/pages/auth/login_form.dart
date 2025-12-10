@@ -36,7 +36,7 @@ class _LoginFormState extends State<LoginForm> {
       );
 
       if (success) {
-        Get.offAllNamed(AppRoutes.home);
+        Get.offAllNamed(AppRoutes.main);
       }
     }
   }

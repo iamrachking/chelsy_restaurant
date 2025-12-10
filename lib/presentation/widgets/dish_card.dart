@@ -32,7 +32,7 @@ class DishCard extends StatelessWidget {
                   ),
                   child: CachedNetworkImage(
                     imageUrl:
-                    dish.image ??
+                        dish.image ??
                         (dish.images.isNotEmpty ? dish.images.first : ''),
                     width: double.infinity,
                     height: 120,
@@ -224,10 +224,10 @@ class DishCard extends StatelessWidget {
                         DateFormatter.formatCurrency(dish.finalPrice),
                         style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
-                        ),
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.end,
                       ),

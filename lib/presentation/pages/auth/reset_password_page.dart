@@ -20,8 +20,19 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   final _passwordController = TextEditingController();
   final _passwordConfirmationController = TextEditingController();
   final AuthController _authController = Get.find<AuthController>();
+
   bool _obscurePassword = true;
   bool _obscurePasswordConfirmation = true;
+
+  @override
+  void initState() {
+    super.initState();
+    // Pré-remplir l'email si passé en argument
+    final args = Get.arguments as Map<String, dynamic>?;
+    if (args != null && args['email'] != null) {
+      _emailController.text = args['email'];
+    }
+  }
 
   @override
   void dispose() {
@@ -33,26 +44,26 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   }
 
   Future<void> _handleResetPassword() async {
-    if (_formKey.currentState!.validate()) {
-      final success = await _authController.resetPassword(
-        email: _emailController.text.trim(),
-        token: _tokenController.text.trim(),
-        password: _passwordController.text,
-        passwordConfirmation: _passwordConfirmationController.text,
-      );
+    if (!_formKey.currentState!.validate()) return;
 
-      if (success) {
-        Get.offAllNamed(AppRoutes.login);
-      }
+    final success = await _authController.resetPassword(
+      email: _emailController.text.trim(),
+      token: _tokenController.text.trim(),
+      password: _passwordController.text,
+      passwordConfirmation: _passwordConfirmationController.text,
+    );
+
+    if (success) {
+      // Attendre que le snackbar soit visible avant de naviguer
+      await Future.delayed(const Duration(seconds: 2));
+      if (mounted) Get.offAllNamed(AppRoutes.login);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Réinitialiser le mot de passe'),
-      ),
+      appBar: AppBar(title: const Text('Réinitialiser le mot de passe')),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -76,9 +87,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 const SizedBox(height: 8),
                 Text(
                   'Entrez le token reçu par email et votre nouveau mot de passe',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey[600],
-                      ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 48),
@@ -109,12 +120,12 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   prefixIcon: const Icon(Icons.lock_outlined),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                      _obscurePassword
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
                     ),
                     onPressed: () {
-                      setState(() {
-                        _obscurePassword = !_obscurePassword;
-                      });
+                      setState(() => _obscurePassword = !_obscurePassword);
                     },
                   ),
                   validator: Validators.password,
@@ -134,9 +145,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                           : Icons.visibility_off_outlined,
                     ),
                     onPressed: () {
-                      setState(() {
-                        _obscurePasswordConfirmation = !_obscurePasswordConfirmation;
-                      });
+                      setState(
+                        () => _obscurePasswordConfirmation =
+                            !_obscurePasswordConfirmation,
+                      );
                     },
                   ),
                   validator: (value) => Validators.confirmPassword(
@@ -150,7 +162,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 Obx(
                   () => CustomButton(
                     text: 'Réinitialiser',
-                    onPressed: _authController.isLoading.value ? null : _handleResetPassword,
+                    onPressed: _authController.isLoading.value
+                        ? null
+                        : _handleResetPassword,
                     isLoading: _authController.isLoading.value,
                     icon: Icons.check_circle,
                   ),
@@ -163,4 +177,3 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     );
   }
 }
-

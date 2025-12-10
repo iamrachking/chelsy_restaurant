@@ -90,10 +90,10 @@ class DishController extends GetxController {
 
       final newDishes = dishesList
           .map((d) {
-        if (d is DishModel) return d;
-        if (d is Map<String, dynamic>) return DishModel.fromJson(d);
-        return null;
-      })
+            if (d is DishModel) return d;
+            if (d is Map<String, dynamic>) return DishModel.fromJson(d);
+            return null;
+          })
           .whereType<DishModel>()
           .toList();
 

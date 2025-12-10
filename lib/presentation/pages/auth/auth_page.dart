@@ -15,65 +15,56 @@ class _AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SafeArea(
         child: Stack(
           children: [
-            // Top section with dark brown background
+            // Top section with primary color and wave at bottom
             Positioned(
               top: 0,
               left: 0,
               right: 0,
-              height: MediaQuery.of(context).size.height * 0.4,
-              child: Container(
-                decoration: const BoxDecoration(
+              height: height * 0.35,
+              child: ClipPath(
+                clipper: BottomWaveClipper(),
+                child: Container(
                   color: AppColors.primary,
-                ),
-                child: CustomPaint(
-                  painter: WavePainter(),
-                  child: Container(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(height: 40),
-                        // Logo CHELSY
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'CHELSY',
-                              style: TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.white,
-                                letterSpacing: 2,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        // Welcome message
-                        Text(
-                          'Bienvenue dans votre nouvelle safe place.',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: AppColors.white.withOpacity(0.9),
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Logo CHELSY
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/chelsy_script_blanc.png',
+                            height: 55,
                           ),
-                          textAlign: TextAlign.center,
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      // Welcome message
+                      Text(
+                        'Bienvenue dans votre nouvelle safe place.',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: AppColors.white.withOpacity(0.9),
                         ),
-                      ],
-                    ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
-            // Bottom section with white background
+            // Bottom section with white background and top rounded corners
             Positioned(
               bottom: 0,
               left: 0,
               right: 0,
-              height: MediaQuery.of(context).size.height * 0.65,
+              height: height * 0.65,
               child: Container(
                 decoration: const BoxDecoration(
                   color: AppColors.white,
@@ -89,7 +80,10 @@ class _AuthPageState extends State<AuthPage> {
                         decoration: BoxDecoration(
                           color: AppColors.white,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: AppColors.primary, width: 1),
+                          border: Border.all(
+                            color: AppColors.primary,
+                            width: 1,
+                          ),
                         ),
                         child: Row(
                           children: [
@@ -136,7 +130,10 @@ class _AuthPageState extends State<AuthPage> {
                               color: AppColors.facebookBlue,
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(Icons.facebook, color: AppColors.white),
+                            child: const Icon(
+                              Icons.facebook,
+                              color: AppColors.white,
+                            ),
                           ),
                           const SizedBox(width: 16),
                           // Google button
@@ -145,20 +142,24 @@ class _AuthPageState extends State<AuthPage> {
                             height: 50,
                             decoration: BoxDecoration(
                               color: AppColors.white,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.black.withOpacity(0.12),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
+                              borderRadius: BorderRadius.circular(25),
+                              border: Border.all(
+                                color: AppColors.greyLight,
+                                width: 1,
+                              ),
                             ),
-                            child: Image.asset(
-                              'assets/icons/google.png',
-                              errorBuilder: (context, error, stackTrace) {
-                                return const Icon(Icons.g_mobiledata, size: 30);
-                              },
+                            child: Padding(
+                              padding: EdgeInsets.all(8),
+                              child: Image.asset(
+                                fit: BoxFit.contain,
+                                'assets/icons/google.png',
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Icon(
+                                    Icons.g_mobiledata,
+                                    size: 30,
+                                  );
+                                },
+                              ),
                             ),
                           ),
                         ],
@@ -209,7 +210,11 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  Widget _buildToggleButton(String text, bool isActive, {required VoidCallback onTap}) {
+  Widget _buildToggleButton(
+    String text,
+    bool isActive, {
+    required VoidCallback onTap,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -231,36 +236,44 @@ class _AuthPageState extends State<AuthPage> {
   }
 }
 
-// Custom painter for wave shape
-class WavePainter extends CustomPainter {
+// Custom clipper for bottom wave
+class BottomWaveClipper extends CustomClipper<Path> {
   @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = AppColors.white
-      ..style = PaintingStyle.fill;
-
+  Path getClip(Size size) {
     final path = Path();
-    path.moveTo(0, size.height * 0.8);
+
+    // Commence en haut à gauche
+    path.moveTo(0, 0);
+
+    // Descend sur la gauche pour commencer la vague
+    path.lineTo(0, size.height * 0.8);
+
+    // Premier pic de la vague
     path.quadraticBezierTo(
-      size.width * 0.25,
-      size.height * 0.7,
-      size.width * 0.5,
-      size.height * 0.8,
+      size.width * 0.25, // X du point de contrôle
+      size.height *
+          0.95, // Y du point de contrôle, plus bas pour plus de profondeur
+      size.width * 0.5, // X final du premier segment
+      size.height * 0.8, // Y final du segment
     );
+
+    // Deuxième pic de la vague
     path.quadraticBezierTo(
-      size.width * 0.75,
-      size.height * 0.9,
-      size.width,
-      size.height * 0.8,
+      size.width * 0.75, // X du point de contrôle
+      size.height * 0.65, // Y plus haut pour créer un creux
+      size.width, // X final
+      size.height * 0.8, // Y final
     );
-    path.lineTo(size.width, size.height);
-    path.lineTo(0, size.height);
+
+    // Ligne droite jusqu’en haut à droite
+    path.lineTo(size.width, 0);
+
+    // Ferme le path
     path.close();
 
-    canvas.drawPath(path, paint);
+    return path;
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }
-
