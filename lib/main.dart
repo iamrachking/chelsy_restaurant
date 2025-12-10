@@ -1,11 +1,20 @@
 import 'package:chelsy_restaurant/core/bindings/home_binding.dart';
+import 'package:chelsy_restaurant/core/bindings/profile_binding.dart';
 import 'package:chelsy_restaurant/core/services/api_service.dart';
 import 'package:chelsy_restaurant/core/services/notification_service.dart';
 import 'package:chelsy_restaurant/core/services/storage_service.dart';
 import 'package:chelsy_restaurant/data/repositories/auth_repository.dart';
+import 'package:chelsy_restaurant/data/repositories/profile_repository.dart';
 import 'package:chelsy_restaurant/presentation/controllers/auth_controller.dart';
+import 'package:chelsy_restaurant/presentation/pages/home/all_dishes_page.dart';
+import 'package:chelsy_restaurant/presentation/pages/home/dish_detail_page.dart';
+import 'package:chelsy_restaurant/presentation/pages/home/featured_dishes_page.dart';
 import 'package:chelsy_restaurant/presentation/pages/home/home_page.dart';
+import 'package:chelsy_restaurant/presentation/pages/home/popular_dishes_page.dart';
 import 'package:chelsy_restaurant/presentation/pages/onboarding/onboarding_page.dart';
+import 'package:chelsy_restaurant/presentation/pages/profile/change_password_page.dart';
+import 'package:chelsy_restaurant/presentation/pages/profile/edit_profile_page.dart';
+import 'package:chelsy_restaurant/presentation/pages/profile/profile_page.dart';
 import 'package:chelsy_restaurant/presentation/pages/splash/splash_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,6 +37,8 @@ Future<void> main() async {
   Get.put(NotificationService());
   Get.put(AuthRepository());
   Get.put(AuthController());
+  Get.put(AuthRepository());
+  Get.put(ProfileRepository());
 
   runApp(const MyApp());
 }
@@ -56,6 +67,31 @@ class MyApp extends StatelessWidget {
           name: AppRoutes.home,
           page: () => const HomePage(),
           binding: HomeBinding(),
+        ),
+        GetPage(
+          name: AppRoutes.profile,
+          page: () => const ProfilePage(),
+          binding: ProfileBinding(),
+        ),
+        GetPage(
+            name: AppRoutes.editProfile,
+            page: () => const EditProfilePage(),
+            binding: ProfileBinding(),
+        ),
+        GetPage(
+          name: AppRoutes.changePassword,
+          page: () => const ChangePasswordPage(),
+          binding: ProfileBinding(),
+        ),
+        GetPage(name: AppRoutes.dishDetail, page: () => const DishDetailPage()),
+        GetPage(name: AppRoutes.allDishes, page: () => const AllDishesPage()),
+        GetPage(
+          name: AppRoutes.dishesFeatured,
+          page: () => const FeaturedDishesPage(),
+        ),
+        GetPage(
+          name: AppRoutes.dishesPopular,
+          page: () => const PopularDishesPage(),
         ),
       ],
     );

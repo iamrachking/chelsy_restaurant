@@ -28,6 +28,7 @@ class _HomePageState extends State<HomePage> {
   final AuthController authController = Get.find<AuthController>();
   final NotificationBadgeController notificationController = Get.put(
     NotificationBadgeController(),
+    permanent: true,
   );
   final BannerController bannerController = Get.find<BannerController>();
   final TextEditingController _searchController = TextEditingController();
@@ -50,7 +51,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    final bannerHeight = screenHeight * 0.25; // 25% de la hauteur de l'écran
+    final bannerHeight = screenHeight * 0.23;
 
     return Scaffold(
       body: SafeArea(
@@ -70,35 +71,26 @@ class _HomePageState extends State<HomePage> {
                     margin: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.primary, width: 2),
+                      border: Border.all(color: AppColors.primary, width: 1),
                     ),
                     child: user?.avatar != null
                         ? ClipOval(
-                            child: CachedNetworkImage(
-                              imageUrl: user!.avatar!,
-                              fit: BoxFit.cover,
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.person),
-                            ),
-                          )
+                      child: CachedNetworkImage(
+                        imageUrl: user!.avatar!,
+                        fit: BoxFit.cover,
+                        errorWidget: (context, url, error) =>
+                        const Icon(Icons.person),
+                      ),
+                    )
                         : const Icon(Icons.person, color: AppColors.primary),
                   ),
                 );
               }),
-              title: Obx(() {
-                final restaurant = dishController.restaurant.value;
-                return Text(
-                  restaurant?['name'] ?? 'CHELSY Restaurant',
-                  style: const TextStyle(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                );
-              }),
+              title: Image.asset('assets/images/chelsy_script.png', height: 40),
               centerTitle: true,
               actions: [
                 Obx(
-                  () => Stack(
+                      () => Stack(
                     children: [
                       IconButton(
                         icon: const Icon(
@@ -153,19 +145,13 @@ class _HomePageState extends State<HomePage> {
             SliverToBoxAdapter(
               child: Obx(() {
                 final banners = bannerController.banners;
+
+                // Si aucune bannière → ne rien afficher
                 if (banners.isEmpty) {
-                  // Fallback sur les images du restaurant si pas de bannières
-                  final restaurant = dishController.restaurant.value;
-                  final images = restaurant?['images'] as List<dynamic>? ?? [];
-                  if (images.isEmpty) {
-                    return const SizedBox.shrink();
-                  }
-                  return BannerCarousel(
-                    images: images.map((img) => img.toString()).toList(),
-                    height: bannerHeight,
-                    autoPlayInterval: const Duration(seconds: 20),
-                  );
+                  return SizedBox(height: bannerHeight);
                 }
+
+                // Sinon → afficher les vraies bannières
                 return BannerCarousel(
                   banners: banners,
                   height: bannerHeight,
@@ -173,6 +159,7 @@ class _HomePageState extends State<HomePage> {
                 );
               }),
             ),
+
             const SliverToBoxAdapter(child: SizedBox(height: 16)),
             // Navigation menu
             SliverToBoxAdapter(
@@ -197,22 +184,19 @@ class _HomePageState extends State<HomePage> {
                     _buildMenuButton(
                       context,
                       icon: Icons.star,
-                      label: 'Plats mise en avant',
+                      label: 'Plats en avant',
                       onTap: () {
-                        dishController.loadDishes(
-                          isFeatured: true,
-                          refresh: true,
-                        );
-                        Get.toNamed(AppRoutes.allDishes);
+                        dishController.featuredDishes();
+                        Get.toNamed(AppRoutes.dishesFeatured);
                       },
                     ),
                     _buildMenuButton(
                       context,
                       icon: Icons.new_releases,
-                      label: 'Nouveautés',
+                      label: 'Populaire',
                       onTap: () {
-                        dishController.loadDishes(isNew: true, refresh: true);
-                        Get.toNamed(AppRoutes.allDishes);
+                        dishController.loadPopularDishes();
+                        Get.toNamed(AppRoutes.dishesPopular);
                       },
                     ),
                     _buildMenuButton(
@@ -364,11 +348,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildMenuButton(
-    BuildContext context, {
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
+      BuildContext context, {
+        required IconData icon,
+        required String label,
+        required VoidCallback onTap,
+      }) {
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -413,9 +397,9 @@ class _HomePageState extends State<HomePage> {
                 color: AppColors.primary.withOpacity(0.1),
                 image: category.image != null
                     ? DecorationImage(
-                        image: NetworkImage(category.image!),
-                        fit: BoxFit.cover,
-                      )
+                  image: NetworkImage(category.image!),
+                  fit: BoxFit.cover,
+                )
                     : null,
               ),
               child: category.image == null

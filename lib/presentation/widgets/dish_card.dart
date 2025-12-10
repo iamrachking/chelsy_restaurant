@@ -1,10 +1,10 @@
-import 'package:chelsy_restaurant/presentation/controllers/favorite_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chelsy_restaurant/data/models/dish_model.dart';
 import 'package:chelsy_restaurant/core/utils/date_formatter.dart';
 import 'package:chelsy_restaurant/core/theme/app_colors.dart';
+import 'package:chelsy_restaurant/presentation/controllers/favorite_controller.dart';
 
 class DishCard extends StatelessWidget {
   final DishModel dish;
@@ -32,7 +32,7 @@ class DishCard extends StatelessWidget {
                   ),
                   child: CachedNetworkImage(
                     imageUrl:
-                        dish.image ??
+                    dish.image ??
                         (dish.images.isNotEmpty ? dish.images.first : ''),
                     width: double.infinity,
                     height: 120,
@@ -101,14 +101,14 @@ class DishCard extends StatelessWidget {
                 // Favorite button
                 Obx(() {
                   final favoriteController = Get.find<FavoriteController>();
-                  favoriteController.isFavorite(dish.id);
+                  final isFavorite = favoriteController.isFavorite(dish.id);
                   return Positioned(
                     top: 8,
                     right: 8,
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        // onTap: () => favoriteController.toggleFavorite(dish.id),
+                        onTap: () => favoriteController.toggleFavorite(dish.id),
                         borderRadius: BorderRadius.circular(20),
                         child: Container(
                           padding: const EdgeInsets.all(8),
@@ -117,10 +117,9 @@ class DishCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Icon(
-                            Icons.favorite_border,
-                            // isFavorite ? Icons.favorite : Icons.favorite_border,
-                            // color: isFavorite ? AppColors.error : Colors.white,
-                            // size: 20,
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
+                            color: isFavorite ? AppColors.error : Colors.white,
+                            size: 20,
                           ),
                         ),
                       ),
@@ -225,10 +224,10 @@ class DishCard extends StatelessWidget {
                         DateFormatter.formatCurrency(dish.finalPrice),
                         style: Theme.of(context).textTheme.titleMedium
                             ?.copyWith(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 13,
-                            ),
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                        ),
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.end,
                       ),

@@ -32,7 +32,10 @@ class AppRoutes {
   static const String createComplaint = '/create-complaint';
   static const String complaintDetail = '/complaint-detail';
   static const String allDishes = '/all-dishes';
+  static const String dishesFeatured = '/dishes-featured';
+  static const String dishesPopular = '/dishes-popular';
   static const String categoryDishes = '/category-dishes';
   static const String notifications = '/notifications';
   static const String restaurantInfo = '/restaurant-info';
+  static const String main = '/main';
 }

@@ -23,8 +23,8 @@ class DishController extends GetxController {
     super.onInit();
     loadRestaurant();
     loadCategories();
-    loadFeaturedDishes();
-    loadPopularDishes();
+    loadFeaturedDishes(refresh: true);
+    loadPopularDishes(refresh: true);
     loadDishes();
   }
 
@@ -51,7 +51,7 @@ class DishController extends GetxController {
     }
   }
 
-  // Load dishes
+  // Load dishes génériques
   Future<void> loadDishes({
     int? categoryId,
     bool? isFeatured,
@@ -85,24 +85,17 @@ class DishController extends GetxController {
         page: currentPage.value,
       );
 
-      final dishesList = result['dishes'];
-      final newDishes = <DishModel>[];
-      if (dishesList is List<DishModel>) {
-        newDishes.addAll(dishesList);
-      } else if (dishesList is List<dynamic>) {
-        for (var d in dishesList) {
-          try {
-            if (d is DishModel) {
-              newDishes.add(d);
-            } else if (d is Map<String, dynamic>) {
-              newDishes.add(DishModel.fromJson(d));
-            }
-          } catch (e) {
-            AppLogger.error('Error parsing dish in controller', e);
-          }
-        }
-      }
+      final dishesList = result['dishes'] as List<dynamic>? ?? [];
       final pagination = result['pagination'] as Map<String, dynamic>?;
+
+      final newDishes = dishesList
+          .map((d) {
+        if (d is DishModel) return d;
+        if (d is Map<String, dynamic>) return DishModel.fromJson(d);
+        return null;
+      })
+          .whereType<DishModel>()
+          .toList();
 
       if (refresh) {
         dishes.value = newDishes;
@@ -114,9 +107,7 @@ class DishController extends GetxController {
         final currentPageNum = pagination['current_page'] as int;
         final lastPage = pagination['last_page'] as int;
         hasMore.value = currentPageNum < lastPage;
-        if (hasMore.value) {
-          currentPage.value = currentPageNum + 1;
-        }
+        if (hasMore.value) currentPage.value = currentPageNum + 1;
       } else {
         hasMore.value = false;
       }
@@ -128,22 +119,30 @@ class DishController extends GetxController {
   }
 
   // Load featured dishes
-  Future<void> loadFeaturedDishes() async {
+  Future<void> loadFeaturedDishes({bool refresh = true}) async {
     try {
+      if (refresh) featuredDishes.clear();
+      isLoading.value = true;
       final dishesList = await _dishRepository.getFeaturedDishes();
       featuredDishes.value = dishesList;
     } catch (e) {
       AppLogger.error('Load featured dishes error', e);
+    } finally {
+      isLoading.value = false;
     }
   }
 
   // Load popular dishes
-  Future<void> loadPopularDishes() async {
+  Future<void> loadPopularDishes({bool refresh = true}) async {
     try {
+      if (refresh) popularDishes.clear();
+      isLoading.value = true;
       final dishesList = await _dishRepository.getPopularDishes();
       popularDishes.value = dishesList;
     } catch (e) {
       AppLogger.error('Load popular dishes error', e);
+    } finally {
+      isLoading.value = false;
     }
   }
 
@@ -170,5 +169,3 @@ class DishController extends GetxController {
     loadDishes(categoryId: categoryId, refresh: true);
   }
 }
-
-
