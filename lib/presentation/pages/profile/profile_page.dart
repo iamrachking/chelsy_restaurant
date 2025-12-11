@@ -179,7 +179,7 @@ class ProfilePage extends StatelessWidget {
                           onPressed: () async {
                             Get.back();
                             await authController.logout();
-                            Get.offAllNamed(AppRoutes.login);
+                            Get.offAllNamed(AppRoutes.auth);
                           },
                           child: const Text('Déconnexion'),
                         ),
