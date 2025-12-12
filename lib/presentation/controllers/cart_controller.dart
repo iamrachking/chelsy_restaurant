@@ -51,7 +51,7 @@ class CartController extends GetxController {
           'Succès',
           'Article ajouté au panier',
           snackPosition: SnackPosition.TOP,
-          duration: const Duration(seconds: 2),
+          duration: const Duration(seconds: 3),
         );
         return true;
       } else {
@@ -177,5 +177,3 @@ class CartController extends GetxController {
   // Get cart total
   double get total => cart.value?.subtotal ?? 0.0;
 }
-
-

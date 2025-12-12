@@ -32,7 +32,7 @@ class ApiService extends GetxService {
           if (token != null) {
             options.headers['Authorization'] = 'Bearer $token';
           }
-          // Si c'est FormData, ne pas définir Content-Type (Dio le fera automatiquement)
+
           if (options.data is dio.FormData) {
             options.headers.remove('Content-Type');
           }

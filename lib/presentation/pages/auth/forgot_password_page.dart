@@ -34,7 +34,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           'Succès',
           'Email envoyé ! Vérifiez votre boîte mail pour le token.',
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
+          backgroundColor: Colors.green.shade600,
           colorText: Colors.white,
         );
 

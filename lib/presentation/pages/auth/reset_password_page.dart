@@ -56,7 +56,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     if (success) {
       // Attendre que le snackbar soit visible avant de naviguer
       await Future.delayed(const Duration(seconds: 2));
-      if (mounted) Get.offAllNamed(AppRoutes.login);
+      if (mounted) Get.offAllNamed(AppRoutes.auth);
     }
   }
 

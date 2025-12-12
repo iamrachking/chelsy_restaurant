@@ -30,7 +30,7 @@ class FavoritesPage extends StatelessWidget {
                 'Ajoutez des plats à vos favoris pour les retrouver facilement',
             buttonText: 'Explorer le menu',
             onButtonTap: () {
-              Get.offAllNamed(AppRoutes.home);
+              Get.offAllNamed(AppRoutes.main);
             },
           );
         }

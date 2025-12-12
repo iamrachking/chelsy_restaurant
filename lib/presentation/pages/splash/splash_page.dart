@@ -55,7 +55,7 @@ class _SplashPageState extends State<SplashPage>
     if (!hasSeenOnboarding) {
       Get.offAllNamed(AppRoutes.onboarding);
     } else if (_authController.isLoggedIn.value) {
-      Get.offAllNamed(AppRoutes.home);
+      Get.offAllNamed(AppRoutes.main);
     } else {
       Get.offAllNamed(AppRoutes.auth);
     }
