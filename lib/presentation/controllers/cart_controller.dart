@@ -6,8 +6,8 @@ import 'package:chelsy_restaurant/core/utils/app_logger.dart';
 class CartController extends GetxController {
   final CartRepository _cartRepository = Get.find<CartRepository>();
 
-  // Observable state
-  final Rx<CartModel?> cart = Rx<CartModel?>(null);
+  // IMPORTANT: Utiliser Rx pour la réactivité
+  final Rx<CartModel> cart = CartModel.empty().obs;
   final RxBool isLoading = false.obs;
 
   @override
@@ -16,20 +16,33 @@ class CartController extends GetxController {
     loadCart();
   }
 
-  // Load cart
+  // Charger le panier
   Future<void> loadCart() async {
     try {
       isLoading.value = true;
+      AppLogger.debug('Loading cart...');
+
       final cartData = await _cartRepository.getCart();
-      cart.value = cartData;
-    } catch (e) {
+
+      if (cartData != null) {
+        cart.value = cartData;
+        AppLogger.debug(
+          'Cart loaded: ${cartData.items.length} items, total: ${cartData.totalItems}',
+        );
+      } else {
+        cart.value = CartModel.empty();
+        AppLogger.debug('No cart data');
+      }
+    } catch (e, stackTrace) {
+      cart.value = CartModel.empty();
       AppLogger.error('Load cart error', e);
+      AppLogger.debug('Stack trace: $stackTrace');
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Add to cart
+  // Ajouter au panier
   Future<bool> addToCart({
     required int dishId,
     required int quantity,
@@ -38,6 +51,8 @@ class CartController extends GetxController {
   }) async {
     try {
       isLoading.value = true;
+      AppLogger.debug('Adding to cart: dishId=$dishId, quantity=$quantity');
+
       final result = await _cartRepository.addToCart(
         dishId: dishId,
         quantity: quantity,
@@ -47,11 +62,16 @@ class CartController extends GetxController {
 
       if (result['success'] == true) {
         cart.value = result['cart'] as CartModel;
+
         Get.snackbar(
           'Succès',
-          'Article ajouté au panier',
+          result['message'] ?? 'Article ajouté au panier',
           snackPosition: SnackPosition.TOP,
-          duration: const Duration(seconds: 3),
+          duration: const Duration(seconds: 2),
+        );
+
+        AppLogger.debug(
+          'Item added successfully. New cart total: ${cart.value.totalItems}',
         );
         return true;
       } else {
@@ -61,18 +81,28 @@ class CartController extends GetxController {
           snackPosition: SnackPosition.TOP,
           duration: const Duration(seconds: 3),
         );
+
+        AppLogger.error('Failed to add item', result['message']);
         return false;
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       AppLogger.error('Add to cart error', e);
-      Get.snackbar('Erreur', 'Une erreur est survenue');
+      AppLogger.debug('Stack trace: $stackTrace');
+
+      Get.snackbar(
+        'Erreur',
+        'Une erreur est survenue',
+        snackPosition: SnackPosition.TOP,
+        duration: const Duration(seconds: 3),
+      );
+
       return false;
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Update cart item
+  // Mettre à jour un article
   Future<bool> updateCartItem({
     required int itemId,
     int? quantity,
@@ -80,6 +110,8 @@ class CartController extends GetxController {
   }) async {
     try {
       isLoading.value = true;
+      AppLogger.debug('Updating cart item $itemId: quantity=$quantity');
+
       final result = await _cartRepository.updateCartItem(
         itemId: itemId,
         quantity: quantity,
@@ -88,12 +120,7 @@ class CartController extends GetxController {
 
       if (result['success'] == true) {
         cart.value = result['cart'] as CartModel;
-        Get.snackbar(
-          'Succès',
-          'Article mis à jour dans le panier',
-          snackPosition: SnackPosition.TOP,
-          duration: const Duration(seconds: 2),
-        );
+        AppLogger.debug('Item updated successfully');
         return true;
       } else {
         Get.snackbar(
@@ -102,35 +129,46 @@ class CartController extends GetxController {
           snackPosition: SnackPosition.TOP,
           duration: const Duration(seconds: 3),
         );
+
+        AppLogger.error('Failed to update item', result['message']);
         return false;
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       AppLogger.error('Update cart item error', e);
+      AppLogger.debug('Stack trace: $stackTrace');
+
       Get.snackbar(
         'Erreur',
         'Une erreur est survenue',
         snackPosition: SnackPosition.TOP,
         duration: const Duration(seconds: 3),
       );
+
       return false;
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Remove cart item
+  // Retirer un article
   Future<void> removeCartItem(int itemId) async {
     try {
       isLoading.value = true;
+      AppLogger.debug('Removing cart item: $itemId');
+
       final success = await _cartRepository.removeCartItem(itemId);
+
       if (success) {
         await loadCart();
+
         Get.snackbar(
           'Succès',
           'Article retiré du panier',
           snackPosition: SnackPosition.TOP,
           duration: const Duration(seconds: 2),
         );
+
+        AppLogger.debug('Item removed successfully');
       } else {
         Get.snackbar(
           'Erreur',
@@ -138,9 +176,13 @@ class CartController extends GetxController {
           snackPosition: SnackPosition.TOP,
           duration: const Duration(seconds: 3),
         );
+
+        AppLogger.error('Failed to remove item', null);
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       AppLogger.error('Remove cart item error', e);
+      AppLogger.debug('Stack trace: $stackTrace');
+
       Get.snackbar(
         'Erreur',
         'Une erreur est survenue',
@@ -152,28 +194,54 @@ class CartController extends GetxController {
     }
   }
 
-  // Clear cart
+  // Vider le panier
   Future<void> clearCart() async {
     try {
       isLoading.value = true;
+      AppLogger.debug('Clearing cart...');
+
       final success = await _cartRepository.clearCart();
+
       if (success) {
-        cart.value = null;
-        Get.snackbar('Succès', 'Panier vidé');
+        cart.value = CartModel.empty();
+
+        Get.snackbar(
+          'Succès',
+          'Panier vidé',
+          snackPosition: SnackPosition.TOP,
+          duration: const Duration(seconds: 2),
+        );
+
+        AppLogger.debug('Cart cleared successfully');
       } else {
-        Get.snackbar('Erreur', 'Erreur lors du vidage');
+        Get.snackbar(
+          'Erreur',
+          'Erreur lors du vidage du panier',
+          snackPosition: SnackPosition.TOP,
+          duration: const Duration(seconds: 3),
+        );
+
+        AppLogger.error('Failed to clear cart', null);
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       AppLogger.error('Clear cart error', e);
-      Get.snackbar('Erreur', 'Une erreur est survenue');
+      AppLogger.debug('Stack trace: $stackTrace');
+
+      Get.snackbar(
+        'Erreur',
+        'Une erreur est survenue',
+        snackPosition: SnackPosition.TOP,
+        duration: const Duration(seconds: 3),
+      );
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Get cart item count
-  int get itemCount => cart.value?.totalItems ?? 0;
-
-  // Get cart total
-  double get total => cart.value?.subtotal ?? 0.0;
+  // Getters réactifs
+  int get itemCount => cart.value.totalItems;
+  double get total => cart.value.subtotal;
+  bool get isEmpty => cart.value.isEmpty;
+  bool get isNotEmpty => cart.value.isNotEmpty;
+  int get dishCount => cart.value.items.length;
 }

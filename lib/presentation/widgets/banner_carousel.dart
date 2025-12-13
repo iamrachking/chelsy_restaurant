@@ -9,7 +9,7 @@ import 'package:chelsy_restaurant/presentation/controllers/dish_controller.dart'
 
 class BannerCarousel extends StatefulWidget {
   final List<BannerModel>? banners;
-  final List<String>? images; // Pour compatibilité avec l'ancien code
+  final List<String>? images;
   final double height;
   final Duration autoPlayInterval;
 
@@ -18,7 +18,7 @@ class BannerCarousel extends StatefulWidget {
     this.banners,
     this.images,
     this.height = 200,
-    this.autoPlayInterval = const Duration(seconds: 20),
+    this.autoPlayInterval = const Duration(seconds: 5),
   });
 
   @override
