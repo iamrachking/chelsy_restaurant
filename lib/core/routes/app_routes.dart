@@ -38,4 +38,6 @@ class AppRoutes {
   static const String notifications = '/notifications';
   static const String restaurantInfo = '/restaurant-info';
   static const String main = '/main';
+  static const String stripePayment = '/payment/stripe';
+  static const String mobileMoneyPayment = '/payment/mobile-money';
 }

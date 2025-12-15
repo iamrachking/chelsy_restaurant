@@ -23,7 +23,7 @@ class ApiService extends GetxService {
       ),
     );
 
-    // Add interceptors
+    //  interceptors
     _dio.interceptors.add(
       dio.InterceptorsWrapper(
         onRequest: (options, handler) {
@@ -55,7 +55,6 @@ class ApiService extends GetxService {
           if (error.response?.statusCode == 401) {
             _storageService.removeToken();
             _storageService.setLoggedIn(false);
-            // ici on peut ajouter une navigation specialiser mais pas inportant
           }
 
           return handler.next(error);

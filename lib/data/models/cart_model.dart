@@ -25,7 +25,7 @@ class CartItemModel {
     final parsedQuantity = json['quantity'] is int ? json['quantity'] : 1;
     final parsedUnitPrice = _parseDouble(json['unit_price']);
 
-    // CORRECTION: Calculer le prix total si non fourni ou incorrect
+    // Calculer le prix total si non fourni ou incorrect
     double parsedTotalPrice = _parseDouble(json['total_price']);
 
     // Si le total_price est 0 ou invalide, le recalculer
@@ -82,6 +82,8 @@ class CartModel {
   final List<CartItemModel> items;
   final double subtotal;
   final int totalItems;
+  final double deliveryFee;
+  final double discountAmount;
 
   CartModel({
     required this.id,
@@ -89,10 +91,20 @@ class CartModel {
     required this.items,
     required this.subtotal,
     required this.totalItems,
+    this.deliveryFee = 0.0,
+    this.discountAmount = 0.0,
   });
 
   factory CartModel.empty() {
-    return CartModel(id: 0, userId: 0, items: [], subtotal: 0.0, totalItems: 0);
+    return CartModel(
+      id: 0,
+      userId: 0,
+      items: [],
+      subtotal: 0.0,
+      totalItems: 0,
+      deliveryFee: 0.0,
+      discountAmount: 0.0,
+    );
   }
 
   factory CartModel.fromJson(Map<String, dynamic> json) {
@@ -107,7 +119,7 @@ class CartModel {
       }
     }
 
-    // CORRECTION: TOUJOURS recalculer le subtotal et totalItems
+    // Recalculer le subtotal et totalItems
     double calculatedSubtotal = items.fold<double>(
       0.0,
       (sum, item) => sum + (item.unitPrice * item.quantity),
@@ -118,13 +130,27 @@ class CartModel {
       (sum, item) => sum + item.quantity,
     );
 
+    // Parser deliveryFee et discountAmount
+    final deliveryFee = _parseDouble(json['delivery_fee']);
+    final discountAmount = _parseDouble(json['discount_amount']);
+
     return CartModel(
       id: json['id'] is int ? json['id'] : 0,
       userId: json['user_id'] is int ? json['user_id'] : 0,
       items: items,
-      subtotal: calculatedSubtotal, // Toujours recalculé
-      totalItems: calculatedTotalItems, // Toujours recalculé
+      subtotal: calculatedSubtotal,
+      totalItems: calculatedTotalItems,
+      deliveryFee: deliveryFee,
+      discountAmount: discountAmount,
     );
+  }
+
+  static double _parseDouble(dynamic value) {
+    if (value == null) return 0.0;
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? 0.0;
+    return 0.0;
   }
 
   Map<String, dynamic> toJson() {
@@ -134,15 +160,20 @@ class CartModel {
       'items': items.map((item) => item.toJson()).toList(),
       'subtotal': subtotal,
       'total_items': totalItems,
+      'delivery_fee': deliveryFee,
+      'discount_amount': discountAmount,
     };
   }
 
   bool get isEmpty => items.isEmpty;
   bool get isNotEmpty => items.isNotEmpty;
 
-  // Getter pour recalculer le subtotal en temps réel
+  // Recalculer le subtotal en temps réel
   double get calculatedSubtotal => items.fold<double>(
     0.0,
     (sum, item) => sum + (item.unitPrice * item.quantity),
   );
+
+  //  TOTAL AVEC LIVRAISON ET RÉDUCTION
+  double get total => calculatedSubtotal + deliveryFee - discountAmount;
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -33,13 +34,25 @@ import 'package:chelsy_restaurant/presentation/pages/profile/edit_profile_page.d
 import 'package:chelsy_restaurant/presentation/pages/profile/change_password_page.dart';
 import 'package:chelsy_restaurant/presentation/pages/favorites/favorites_page.dart';
 import 'package:chelsy_restaurant/presentation/pages/notifications/notifications_page.dart';
+import 'package:chelsy_restaurant/presentation/pages/addresses/add_address_page.dart';
+import 'package:chelsy_restaurant/presentation/pages/addresses/addresses_page.dart';
+import 'package:chelsy_restaurant/presentation/pages/checkout/checkout_page.dart';
+import 'package:chelsy_restaurant/presentation/pages/checkout/mobile_money_payment_page.dart';
+import 'package:chelsy_restaurant/presentation/pages/checkout/stripe_payment_page.dart';
+import 'package:chelsy_restaurant/presentation/pages/orders/order_detail_page.dart';
+import 'package:chelsy_restaurant/presentation/pages/orders/order_tracking_page.dart';
+import 'package:chelsy_restaurant/presentation/pages/orders/orders_page.dart';
 
 import 'package:chelsy_restaurant/core/bindings/home_binding.dart';
 import 'package:chelsy_restaurant/core/bindings/profile_binding.dart';
+import 'package:chelsy_restaurant/core/bindings/order_binding.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  _initializeStripe();
 
   // Services
   await Get.putAsync(() => StorageService().init());
@@ -56,6 +69,19 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
+// initialisation de Stripe avec la clé publique
+void _initializeStripe() {
+  try {
+    final stripePublishableKey =
+        'pk_test_51SXxWCEIbGGIRVuQSHaYq7jTIp8jSikdpD1diwQ143vD9hl2BYgHN240XuyfuXHASsnjyEwniHlYQMpfHfra7zln00VSqzGaXp';
+    Stripe.publishableKey = stripePublishableKey;
+
+    Stripe.instance.applySettings();
+  } catch (e) {
+    print('Stripe initialization error: $e');
+  }
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -67,11 +93,12 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       initialRoute: AppRoutes.splash,
       getPages: [
+        // SPLASH & ONBOARDING
         GetPage(name: AppRoutes.splash, page: () => const SplashPage()),
         GetPage(name: AppRoutes.initial, page: () => const InitialPage()),
         GetPage(name: AppRoutes.onboarding, page: () => const OnboardingPage()),
 
-        // Auth
+        // AUTHENTIFICATION
         GetPage(name: AppRoutes.auth, page: () => const AuthPage()),
         GetPage(name: AppRoutes.login, page: () => const LoginPage()),
         GetPage(name: AppRoutes.register, page: () => const RegisterPage()),
@@ -80,7 +107,7 @@ class MyApp extends StatelessWidget {
           page: () => const ForgotPasswordPage(),
         ),
 
-        // MAIN PAGE
+        // MAIN
         GetPage(
           name: AppRoutes.main,
           page: () => const MainPage(),
@@ -120,8 +147,6 @@ class MyApp extends StatelessWidget {
           page: () => const ChangePasswordPage(),
           binding: ProfileBinding(),
         ),
-
-        // OTHER
         GetPage(
           name: AppRoutes.favorites,
           page: () => const FavoritesPage(),
@@ -130,6 +155,58 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: AppRoutes.notifications,
           page: () => const NotificationsPage(),
+        ),
+
+        // CHECKOUT & ORDERS
+        GetPage(
+          name: AppRoutes.checkout,
+          page: () => const CheckoutPage(),
+          binding: OrderBinding(),
+        ),
+        GetPage(
+          name: AppRoutes.orders,
+          page: () => const OrdersPage(),
+          binding: OrderBinding(),
+        ),
+        GetPage(
+          name: AppRoutes.orderDetail,
+          page: () => const OrderDetailPage(),
+          binding: OrderBinding(),
+        ),
+        GetPage(
+          name: AppRoutes.orderTracking,
+          page: () {
+            final orderId = Get.arguments as int;
+            return OrderTrackingPage(orderId: orderId);
+          },
+          binding: OrderBinding(),
+        ),
+
+        // ADDRESSES
+        GetPage(
+          name: AppRoutes.addresses,
+          page: () => const AddressesPage(),
+          binding: OrderBinding(),
+        ),
+        GetPage(
+          name: AppRoutes.addAddress,
+          page: () {
+            final address = Get.arguments;
+            return AddAddressPage(address: address);
+          },
+          binding: OrderBinding(),
+        ),
+
+        // PAYMENTS
+        GetPage(
+          name: AppRoutes.stripePayment,
+          page: () => const StripePaymentPage(),
+          binding: OrderBinding(),
+        ),
+        GetPage(
+          name: AppRoutes.mobileMoneyPayment,
+          page: () => const MobileMoneyPaymentPage(),
+          binding: OrderBinding(),
         ),
       ],
     );

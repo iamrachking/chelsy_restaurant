@@ -8,7 +8,8 @@ import 'package:chelsy_restaurant/presentation/controllers/notification_badge_co
 
 class NotificationService extends GetxService {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _localNotifications =
+      FlutterLocalNotificationsPlugin();
   final ApiService _apiService = Get.find<ApiService>();
   final StorageService _storageService = Get.find<StorageService>();
 
@@ -34,8 +35,10 @@ class NotificationService extends GetxService {
     }
 
     // Initialize local notifications
-    const AndroidInitializationSettings androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const DarwinInitializationSettings iosSettings = DarwinInitializationSettings();
+    const AndroidInitializationSettings androidSettings =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const DarwinInitializationSettings iosSettings =
+        DarwinInitializationSettings();
     const InitializationSettings initSettings = InitializationSettings(
       android: androidSettings,
       iOS: iosSettings,
@@ -53,7 +56,8 @@ class NotificationService extends GetxService {
     FirebaseMessaging.onMessageOpenedApp.listen(_handleBackgroundMessage);
 
     // Get initial message (when app opened from notification)
-    RemoteMessage? initialMessage = await _firebaseMessaging.getInitialMessage();
+    RemoteMessage? initialMessage = await _firebaseMessaging
+        .getInitialMessage();
     if (initialMessage != null) {
       _handleBackgroundMessage(initialMessage);
     }
@@ -84,10 +88,7 @@ class NotificationService extends GetxService {
 
   Future<void> _registerTokenToServer(String token) async {
     try {
-      await _apiService.post(
-        '/fcm-token',
-        data: {'token': token},
-      );
+      await _apiService.post('/fcm-token', data: {'token': token});
       AppLogger.info('FCM token registered to server');
     } catch (e) {
       AppLogger.error('Error registering FCM token to server', e);
@@ -106,12 +107,12 @@ class NotificationService extends GetxService {
 
   void _handleForegroundMessage(RemoteMessage message) {
     AppLogger.info('Foreground message received: ${message.messageId}');
-    
+
     // Increment notification badge
     if (Get.isRegistered<NotificationBadgeController>()) {
       Get.find<NotificationBadgeController>().incrementUnread();
     }
-    
+
     _showLocalNotification(message);
     _handleNotificationData(message.data);
   }
@@ -152,14 +153,16 @@ class NotificationService extends GetxService {
     final notification = message.notification;
     if (notification == null) return;
 
-    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-      'chelsy_restaurant_channel',
-      'CHELSY Restaurant Notifications',
-      channelDescription: 'Notifications pour les commandes et mises à jour',
-      importance: Importance.high,
-      priority: Priority.high,
-      showWhen: true,
-    );
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+          'chelsy_restaurant_channel',
+          'CHELSY Restaurant Notifications',
+          channelDescription:
+              'Notifications pour les commandes et mises à jour',
+          importance: Importance.high,
+          priority: Priority.high,
+          showWhen: true,
+        );
 
     const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
       presentAlert: true,
@@ -188,4 +191,3 @@ class NotificationService extends GetxService {
     }
   }
 }
-

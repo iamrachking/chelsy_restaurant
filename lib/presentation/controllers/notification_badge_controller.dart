@@ -29,4 +29,3 @@ class NotificationBadgeController extends GetxController {
   // Check if there are unread notifications
   bool get hasUnread => unreadCount.value > 0;
 }
-

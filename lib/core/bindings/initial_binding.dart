@@ -1,3 +1,7 @@
+import 'package:chelsy_restaurant/data/repositories/address_repository.dart';
+import 'package:chelsy_restaurant/data/repositories/favorite_repository.dart';
+import 'package:chelsy_restaurant/data/repositories/order_repository.dart';
+import 'package:chelsy_restaurant/data/repositories/promo_repository.dart';
 import 'package:get/get.dart';
 import 'package:chelsy_restaurant/data/repositories/banner_repository.dart';
 import 'package:chelsy_restaurant/data/repositories/profile_repository.dart';
@@ -21,6 +25,10 @@ class InitialBinding extends Bindings {
     Get.put(CartRepository(), permanent: true);
     Get.put(BannerRepository(), permanent: true);
     Get.put(ProfileRepository(), permanent: true);
+    Get.put(OrderRepository(), permanent: true);
+    Get.put(PromoRepository(), permanent: true);
+    Get.put(AddressRepository(), permanent: true);
+    Get.put(FavoriteRepository(), permanent: true);
 
     // Controllers permanents
     Get.put(AuthController(), permanent: true);

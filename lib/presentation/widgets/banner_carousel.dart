@@ -34,7 +34,7 @@ class _BannerCarouselState extends State<BannerCarousel> {
     if (widget.banners != null && widget.banners!.isNotEmpty) {
       return widget.banners!;
     }
-    // Fallback pour compatibilité avec l'ancien code
+
     if (widget.images != null && widget.images!.isNotEmpty) {
       return widget.images!
           .map(
@@ -87,7 +87,6 @@ class _BannerCarouselState extends State<BannerCarousel> {
       return;
     }
 
-    // Parser le lien pour déterminer la navigation
     final link = banner.link!;
 
     // Si c'est un lien de catégorie
@@ -119,7 +118,6 @@ class _BannerCarouselState extends State<BannerCarousel> {
         }
       }
     }
-    // Autres types de liens peuvent être ajoutés ici (ex: liens vers des plats, pages spécifiques, etc.)
   }
 
   @override
