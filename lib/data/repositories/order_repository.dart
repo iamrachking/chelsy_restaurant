@@ -381,4 +381,45 @@ class OrderRepository {
       return {'success': false, 'message': e.toString()};
     }
   }
+
+  Future<Map<String, dynamic>?> getOrderTracking(int orderId) async {
+    try {
+      final response = await _apiService.get('/orders/$orderId/tracking');
+
+      if (response.data == null) {
+        return null;
+      }
+
+      // Si la réponse est un succès
+      if (response.data['success'] == true) {
+        final data = response.data['data'] as Map<String, dynamic>?;
+
+        if (data == null) {
+          return {'success': false, 'message': 'Données de suivi vides'};
+        }
+
+        // Retourner les données de suivi avec le succès
+        return {
+          'success': true,
+          'data': {
+            'position': data['position'] as Map<String, dynamic>?,
+            'driver': data['driver'] as Map<String, dynamic>?,
+            'eta_minutes': data['eta_minutes'] as int?,
+            'distance_km': data['distance_km'] as double?,
+            'message': data['message'] as String?,
+          },
+        };
+      }
+
+      // Cas où la commande n'est pas en livraison
+      return {
+        'success': false,
+        'message':
+            response.data['message'] ?? 'Commande non en cours de livraison',
+      };
+    } catch (e) {
+      AppLogger.error('OrderRepository.getOrderTracking', e);
+      return {'success': false, 'message': e.toString()};
+    }
+  }
 }

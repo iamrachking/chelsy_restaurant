@@ -1,3 +1,6 @@
+import 'package:chelsy_restaurant/core/bindings/tracking_binding.dart';
+// import 'package:chelsy_restaurant/core/services/location_service.dart';
+import 'package:chelsy_restaurant/presentation/controllers/tracking_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
@@ -58,6 +61,7 @@ Future<void> main() async {
   await Get.putAsync(() => StorageService().init());
   Get.put(ApiService());
   Get.put(NotificationService());
+  // Get.put(LocationService());
 
   // Repositories
   Get.put(AuthRepository());
@@ -65,6 +69,7 @@ Future<void> main() async {
 
   // Controllers
   Get.put(AuthController());
+  Get.lazyPut<TrackingController>(() => TrackingController());
 
   runApp(const MyApp());
 }
@@ -179,7 +184,7 @@ class MyApp extends StatelessWidget {
             final orderId = Get.arguments as int;
             return OrderTrackingPage(orderId: orderId);
           },
-          binding: OrderBinding(),
+          bindings: [OrderBinding(), TrackingBinding()],
         ),
 
         // ADDRESSES
