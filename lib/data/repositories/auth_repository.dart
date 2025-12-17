@@ -44,7 +44,10 @@ class AuthRepository {
         return {'success': true, 'user': user, 'token': token};
       }
 
-      return {'success': false, 'message': response.data['message'] ?? 'Erreur lors de l\'inscription'};
+      return {
+        'success': false,
+        'message': response.data['message'] ?? 'Erreur lors de l\'inscription',
+      };
     } catch (e) {
       AppLogger.error('Registration error', e);
       return {'success': false, 'message': e.toString()};
@@ -59,10 +62,7 @@ class AuthRepository {
     try {
       final response = await _apiService.post(
         '/login',
-        data: {
-          'email': email,
-          'password': password,
-        },
+        data: {'email': email, 'password': password},
       );
 
       if (response.data['success'] == true) {
@@ -79,7 +79,10 @@ class AuthRepository {
         return {'success': true, 'user': user, 'token': token};
       }
 
-      return {'success': false, 'message': response.data['message'] ?? 'Erreur lors de la connexion'};
+      return {
+        'success': false,
+        'message': response.data['message'] ?? 'Erreur lors de la connexion',
+      };
     } catch (e) {
       AppLogger.error('Login error', e);
       return {'success': false, 'message': e.toString()};
@@ -162,7 +165,8 @@ class AuthRepository {
 
       return {
         'success': response.data['success'] == true,
-        'message': response.data['message'] ?? 'Erreur lors de la réinitialisation',
+        'message':
+            response.data['message'] ?? 'Erreur lors de la réinitialisation',
       };
     } catch (e) {
       AppLogger.error('Reset password error', e);
@@ -170,5 +174,3 @@ class AuthRepository {
     }
   }
 }
-
-

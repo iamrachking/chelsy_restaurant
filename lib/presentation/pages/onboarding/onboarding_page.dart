@@ -75,7 +75,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
       body: SafeArea(
         child: Column(
           children: [
-            // Page view
             Expanded(
               child: PageView.builder(
                 controller: _pageController,
@@ -90,7 +89,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 },
               ),
             ),
-            // Bottom section
             Container(
               decoration: BoxDecoration(color: AppColors.backgroundBeige),
               padding: const EdgeInsets.all(24),
@@ -105,7 +103,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     ),
                   ),
                   const SizedBox(height: 32),
-                  // Buttons
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -157,7 +154,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
       ),
       child: Column(
         children: [
-          // Image section
           Expanded(
             flex: 3,
             child: Container(
@@ -166,12 +162,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 child: Image.asset(
                   item.imagePath,
                   errorBuilder: (context, error, stackTrace) {
-                    // Fallback icon if image not found
+                    // Fallback si une image na pas ete trouve
                     return Container(
                       width: 200,
                       height: 200,
                       decoration: BoxDecoration(
-                        color: AppColors.white.withOpacity(0.2),
+                        color: AppColors.white.withValues(alpha: .2),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Icon(item.icon, size: 100, color: AppColors.white),
@@ -181,7 +177,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
               ),
             ),
           ),
-          // Text section
           Expanded(
             flex: 2,
             child: Container(
@@ -190,10 +185,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Icon
                   Icon(item.icon, size: 40, color: AppColors.amber),
                   const SizedBox(height: 16),
-                  // Title
                   RichText(
                     textAlign: TextAlign.center,
                     text: TextSpan(
@@ -215,7 +208,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  // Description
                   Text(
                     item.description,
                     style: TextStyle(fontSize: 16, color: AppColors.primary),

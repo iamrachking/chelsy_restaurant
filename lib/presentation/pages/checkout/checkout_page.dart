@@ -76,6 +76,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
     if (!_validateForm()) return;
 
     try {
+      AppLogger.debug(
+        'Creating order with promo: ${_promoCodeController.text}',
+      );
+
       final result = await _orderController.createOrder(
         type: _orderType,
         addressId: _selectedAddressId,
@@ -97,6 +101,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
         AppLogger.debug('Order created: ${order.orderNumber}');
 
         await _cartController.clearCart();
+        _promoController.clearPromo();
 
         // Traitement du paiement selon la méthode
         if (_paymentMethod == AppConstants.paymentMethodCard) {
@@ -104,15 +109,21 @@ class _CheckoutPageState extends State<CheckoutPage> {
         } else if (_paymentMethod == AppConstants.paymentMethodMobileMoney) {
           _handleMobileMoneyPayment(order.id, payment);
         } else {
-          Get.offNamedUntil(
+          Get.toNamed(
             AppRoutes.orderDetail,
-            (route) => route.settings.name == AppRoutes.home,
             arguments: order.id,
+            parameters: {'fromCheckout': 'true'},
           );
         }
+      } else {
+        AppLogger.error('CheckoutPage._createOrder', 'Order creation failed');
+        Get.snackbar(
+          'Erreur',
+          result['message'] ?? 'Erreur lors de la création',
+        );
       }
     } catch (e) {
-      AppLogger.error('Order creation failed', e);
+      AppLogger.error('CheckoutPage._createOrder', e);
       Get.snackbar('Erreur', 'Une erreur est survenue');
     }
   }
@@ -172,7 +183,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ==================== TYPE DE COMMANDE ====================
+              // Type de commande
               _buildSectionTitle(context, 'Type de commande'),
               const SizedBox(height: 12),
               Row(
@@ -209,7 +220,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
               ),
               const SizedBox(height: 24),
 
-              // ==================== SÉLECTION ADRESSE ====================
+              // Sélection d'adresse si livraison
               if (_orderType == AppConstants.orderTypeDelivery) ...[
                 _buildSectionTitle(context, 'Adresse de livraison'),
                 const SizedBox(height: 12),
@@ -265,7 +276,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 const SizedBox(height: 24),
               ],
 
-              // ==================== MÉTHODE DE PAIEMENT ====================
+              // Méthode de paiement
               _buildSectionTitle(context, 'Méthode de paiement'),
               const SizedBox(height: 12),
               Card(
@@ -282,7 +293,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         });
                       },
                     ),
-                    const Divider(height: 0),
+                    const Divider(height: 0.5),
                     RadioListTile<String>(
                       title: const Text('Carte bancaire'),
                       subtitle: const Text('Stripe - Sécurisé'),
@@ -311,12 +322,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
               ),
               const SizedBox(height: 24),
 
-              // ==================== MOBILE MONEY INFOS ====================
+              // Mobile Money
               if (_paymentMethod == AppConstants.paymentMethodMobileMoney) ...[
                 _buildSectionTitle(context, 'Informations Mobile Money'),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
-                  value: _mobileMoneyProvider,
+                  initialValue: _mobileMoneyProvider,
                   decoration: const InputDecoration(
                     labelText: 'Fournisseur',
                     border: OutlineInputBorder(),
@@ -335,14 +346,14 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 CustomTextField(
                   controller: _mobileMoneyPhoneController,
                   label: 'Numéro de téléphone',
-                  hint: '+229 12 34 56 78',
+                  hint: '+229 01 12 34 56 78',
                   prefixIcon: const Icon(Icons.phone),
                   keyboardType: TextInputType.phone,
                 ),
                 const SizedBox(height: 24),
               ],
 
-              // ==================== CODE PROMO ====================
+              // Code promo
               _buildSectionTitle(context, 'Code promo'),
               const SizedBox(height: 12),
               Row(
@@ -366,6 +377,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                   _promoCodeController.text.trim(),
                                   _cartController.cart.value.subtotal,
                                 );
+                              } else {
+                                Get.snackbar('Erreur', 'Entrez un code promo');
                               }
                             },
                       child: const Text('Valider'),
@@ -373,9 +386,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   ),
                 ],
               ),
+              //  AFFICHAGE DU CODE PROMO VALIDÉ
               Obx(() {
                 if (_promoController.validatedPromo.value != null) {
                   final promo = _promoController.validatedPromo.value!;
+                  final discount = _promoController.discountAmount;
+
                   return Container(
                     margin: const EdgeInsets.only(top: 12),
                     padding: const EdgeInsets.all(12),
@@ -400,8 +416,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 ),
                               ),
                               Text(
-                                '-${DateFormatter.formatCurrency(_promoController.discountAmount)}',
-                                style: TextStyle(color: Colors.green[700]),
+                                '-${DateFormatter.formatCurrency(discount)}',
+                                style: TextStyle(
+                                  color: Colors.green[700],
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ],
                           ),
@@ -421,7 +440,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
               }),
               const SizedBox(height: 24),
 
-              // ==================== INSTRUCTIONS SPÉCIALES ====================
+              // Instructions spéciales
               _buildSectionTitle(context, 'Instructions spéciales'),
               const SizedBox(height: 12),
               CustomTextField(
@@ -433,11 +452,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
               ),
               const SizedBox(height: 24),
 
-              // ==================== RÉSUMÉ DE COMMANDE ====================
+              //  RÉSUMÉ DE COMMANDE AVEC RÉDUCTION
               _buildOrderSummary(context),
               const SizedBox(height: 24),
 
-              // ==================== BOUTON CONFIRMER ====================
+              // Bouton confirmer
               Obx(
                 () => CustomButton(
                   text: 'Confirmer la commande',
@@ -466,6 +485,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
     );
   }
 
+  //  RÉSUMÉ DE COMMANDE AMÉLIORÉ AVEC RÉDUCTION VISIBLE
   Widget _buildOrderSummary(BuildContext context) {
     return Obx(() {
       final cart = _cartController.cart.value;
@@ -473,7 +493,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
       final deliveryFee = _orderType == AppConstants.orderTypeDelivery
           ? cart.deliveryFee
           : 0.0;
-      final total = cart.calculatedSubtotal + deliveryFee - discount;
+      final subtotal = cart.calculatedSubtotal;
+      final total = subtotal + deliveryFee - discount;
 
       return Card(
         child: Padding(
@@ -486,6 +507,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 16),
+
+              // Articles
               ...cart.items.map((item) {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 8),
@@ -507,13 +530,17 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 );
               }),
               const Divider(),
+
+              // Sous-total
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text('Sous-total'),
-                  Text(DateFormatter.formatCurrency(cart.calculatedSubtotal)),
+                  Text(DateFormatter.formatCurrency(subtotal)),
                 ],
               ),
+
+              // Livraison
               if (deliveryFee > 0)
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
@@ -525,30 +552,51 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     ],
                   ),
                 ),
+
+              //  RÉDUCTION (BIEN VISIBLE)
               if (discount > 0)
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Réduction'),
+                      const Text(
+                        'Réduction',
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       Text(
                         '-${DateFormatter.formatCurrency(discount)}',
-                        style: const TextStyle(color: Colors.green),
+                        style: const TextStyle(
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                     ],
                   ),
                 ),
+
               const Divider(),
+
+              //  TOTAL À PAYER (BIEN VISIBLE)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Total', style: Theme.of(context).textTheme.titleLarge),
+                  Text(
+                    'Total à payer',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   Text(
                     DateFormatter.formatCurrency(total),
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       color: AppColors.primary,
                       fontWeight: FontWeight.bold,
+                      fontSize: 18,
                     ),
                   ),
                 ],

@@ -27,7 +27,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   @override
   void initState() {
     super.initState();
-    // Pré-remplir l'email si passé en argument
+    // Pre-remplir l'email si passé en argument
     final args = Get.arguments as Map<String, dynamic>?;
     if (args != null && args['email'] != null) {
       _emailController.text = args['email'];

@@ -38,7 +38,6 @@ class OrderItemModel {
             : null,
       );
     } catch (e) {
-      // Si parsing échoue, retourner un item par défaut
       return OrderItemModel(
         id: 0,
         dishId: 0,
@@ -63,8 +62,7 @@ class OrderItemModel {
     if (value is double) return value;
     if (value is int) return value.toDouble();
     if (value is String) {
-      // Nettoyer les espaces et convertir
-      final cleaned = (value as String).trim().replaceAll(',', '.');
+      final cleaned = (value).trim().replaceAll(',', '.');
       return double.tryParse(cleaned) ?? 0.0;
     }
     return 0.0;
@@ -199,20 +197,26 @@ class OrderModel {
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
     try {
-      // Parser les IDs de manière sécurisée
+      //  Parser les IDs
       final id = _parseIntSafely(json['id']);
       final userId = _parseIntSafely(json['user_id']);
       final driverId = _parseIntSafelyNullable(json['driver_id']);
       final restaurantId = _parseIntSafely(json['restaurant_id']);
       final addressId = _parseIntSafelyNullable(json['address_id']);
 
-      //  Parser les montants avec robustesse accrue
+      //  Parser orderNumber
+      final orderNumber = (json['order_number'] as String?)?.trim();
+      if (orderNumber == null || orderNumber.isEmpty) {
+        throw Exception('order_number is null or empty in JSON');
+      }
+
+      //  Parser les montants
       final subtotal = _parseDoubleSafely(json['subtotal']);
       final deliveryFee = _parseDoubleSafely(json['delivery_fee']);
       final discountAmount = _parseDoubleSafely(json['discount_amount']);
       final total = _parseDoubleSafely(json['total']);
 
-      //  Parser les items de manière TRÈS sécurisée
+      // Parser les items
       final items = <OrderItemModel>[];
       if (json['items'] is List) {
         for (final item in (json['items'] as List)) {
@@ -235,6 +239,19 @@ class OrderModel {
       final deliveredAt = json['delivered_at'] != null
           ? _parseDateSafely(json['delivered_at'])
           : null;
+
+      //  Parser le promo_code (peut être un objet Map ou une string)
+      String? promoCode;
+      if (json['promo_code'] != null) {
+        if (json['promo_code'] is String) {
+          //  Si c'est une string,on m'utilise directement
+          promoCode = (json['promo_code'] as String).trim();
+        } else if (json['promo_code'] is Map<String, dynamic>) {
+          //  Si c'est un Map, on extraire le code
+          final promoMap = json['promo_code'] as Map<String, dynamic>;
+          promoCode = (promoMap['code'] as String?)?.trim();
+        }
+      }
 
       //  Parser payment avec protection
       PaymentModel? paymentModel;
@@ -276,7 +293,7 @@ class OrderModel {
 
       return OrderModel(
         id: id,
-        orderNumber: (json['order_number'] as String?)?.trim() ?? 'N/A',
+        orderNumber: orderNumber,
         userId: userId,
         driverId: driverId,
         restaurantId: restaurantId,
@@ -287,7 +304,7 @@ class OrderModel {
         deliveryFee: deliveryFee,
         discountAmount: discountAmount,
         total: total,
-        promoCode: (json['promo_code'] as String?)?.trim(),
+        promoCode: promoCode, // ✅ Utiliser le code parsé correctement
         scheduledAt: scheduledAt,
         deliveredAt: deliveredAt,
         cancellationReason: (json['cancellation_reason'] as String?)?.trim(),
@@ -303,22 +320,8 @@ class OrderModel {
         updatedAt: updatedAt,
       );
     } catch (e) {
-      //  Si tout échoue, retourner un OrderModel par défaut
-      return OrderModel(
-        id: 0,
-        orderNumber: 'ERROR',
-        userId: 0,
-        restaurantId: 0,
-        type: 'delivery',
-        status: 'pending',
-        subtotal: 0.0,
-        deliveryFee: 0.0,
-        discountAmount: 0.0,
-        total: 0.0,
-        items: [],
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
+      //  Lancer l'exception pour que le repository/controller la voie
+      throw Exception('Failed to parse OrderModel from JSON. Error: $e');
     }
   }
 
@@ -344,8 +347,6 @@ class OrderModel {
     if (value is double) return value;
     if (value is int) return value.toDouble();
     if (value is String) {
-      //  Nettoyer et convertir les strings
-      // Pas besoin de cast car le 'is String' check ci-dessus le garantit
       final trimmed = value.trim();
       final cleaned = trimmed.replaceAll(',', '.');
       return double.tryParse(cleaned) ?? 0.0;

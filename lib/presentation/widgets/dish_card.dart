@@ -98,7 +98,7 @@ class DishCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                // Favorite button
+                // button favorie
                 Obx(() {
                   final favoriteController = Get.find<FavoriteController>();
                   final isFavorite = favoriteController.isFavorite(dish.id);

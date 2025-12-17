@@ -64,14 +64,12 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 20),
-                // Title
                 Text(
                   'Modifier votre mot de passe',
                   style: AppTextStyles.h1.copyWith(color: AppColors.primary),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
-                // Subtitle
                 Text(
                   'Assurez vous de choisir un mot de passe sécurisé',
                   style: Theme.of(
@@ -79,7 +77,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   ).textTheme.bodyMedium?.copyWith(color: AppColors.primary),
                 ),
                 const SizedBox(height: 32),
-                // Current password
                 CustomTextField(
                   controller: _currentPasswordController,
                   label: null,
@@ -121,7 +118,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 16),
-                // New password
                 CustomTextField(
                   controller: _newPasswordController,
                   label: null,
@@ -162,7 +158,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 16),
-                // Confirm password
                 CustomTextField(
                   controller: _confirmPasswordController,
                   label: null,
@@ -207,7 +202,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   onSubmitted: (_) => _handleChangePassword(),
                 ),
                 const SizedBox(height: 40),
-                // Confirm button
                 Obx(
                   () => CustomButton(
                     text: 'Confirmer',

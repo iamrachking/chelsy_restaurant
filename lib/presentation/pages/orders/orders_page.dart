@@ -15,101 +15,103 @@ class OrdersPage extends StatelessWidget {
     final OrderController orderController = Get.find<OrderController>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Mes commandes'),
-      ),
-      body: Obx(
-        () {
-          if (orderController.isLoading.value && orderController.orders.isEmpty) {
-            return const LoadingWidget();
-          }
+      appBar: AppBar(title: const Text('Mes commandes')),
+      body: Obx(() {
+        if (orderController.isLoading.value && orderController.orders.isEmpty) {
+          return const LoadingWidget();
+        }
 
-          if (orderController.orders.isEmpty) {
-            return EmptyStateWidget(
-              icon: Icons.shopping_bag_outlined,
-              title: 'Aucune commande',
-              message: 'Vous n\'avez pas encore passé de commande',
-              buttonText: 'Explorer le menu',
-              onButtonTap: () {
-                Get.offAllNamed(AppRoutes.main);
-              },
-            );
-          }
+        if (orderController.orders.isEmpty) {
+          return EmptyStateWidget(
+            icon: Icons.shopping_bag_outlined,
+            title: 'Aucune commande',
+            message: 'Vous n\'avez pas encore passé de commande',
+            buttonText: 'Explorer le menu',
+            onButtonTap: () {
+              Get.offAllNamed(AppRoutes.main);
+            },
+          );
+        }
 
-          return RefreshIndicator(
-            onRefresh: () => orderController.loadOrders(refresh: true),
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: orderController.orders.length,
-              itemBuilder: (context, index) {
-                final order = orderController.orders[index];
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  child: InkWell(
-                    onTap: () {
-                      Get.toNamed(AppRoutes.orderDetail, arguments: order.id);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                order.orderNumber,
-                                style: Theme.of(context).textTheme.titleLarge,
+        return RefreshIndicator(
+          onRefresh: () => orderController.loadOrders(refresh: true),
+          child: ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: orderController.orders.length,
+            itemBuilder: (context, index) {
+              final order = orderController.orders[index];
+              return Card(
+                margin: const EdgeInsets.only(bottom: 12),
+                child: InkWell(
+                  onTap: () {
+                    Get.toNamed(AppRoutes.orderDetail, arguments: order.id);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              order.orderNumber,
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
                               ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                decoration: BoxDecoration(
-                                  color: _getStatusColor(order.status).withOpacity(0.2),
-                                  borderRadius: BorderRadius.circular(20),
+                              decoration: BoxDecoration(
+                                color: _getStatusColor(
+                                  order.status,
+                                ).withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                _getStatusText(order.status),
+                                style: TextStyle(
+                                  color: _getStatusColor(order.status),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
                                 ),
-                                child: Text(
-                                  _getStatusText(order.status),
-                                  style: TextStyle(
-                                    color: _getStatusColor(order.status),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          DateFormatter.formatDateTime(order.createdAt),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '${order.items.length} article(s)',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            Text(
+                              DateFormatter.formatCurrency(order.total),
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(
+                                    color: AppColors.primary,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 12,
                                   ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            DateFormatter.formatDateTime(order.createdAt),
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                '${order.items.length} article(s)',
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                              Text(
-                                DateFormatter.formatCurrency(order.total),
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                      color: AppColors.primary,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                );
-              },
-            ),
-          );
-        },
-      ),
+                ),
+              );
+            },
+          ),
+        );
+      }),
     );
   }
 
@@ -156,4 +158,3 @@ class OrdersPage extends StatelessWidget {
     }
   }
 }
-

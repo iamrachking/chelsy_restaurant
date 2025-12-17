@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 class AppLogger {
   static void debug(String message, [Object? error, StackTrace? stackTrace]) {
     if (kDebugMode) {
-      print('🐛 [DEBUG] $message');
+      print('🐞 [DEBUG] $message');
       if (error != null) {
         print('Error: $error');
       }
@@ -37,5 +37,3 @@ class AppLogger {
     }
   }
 }
-
-

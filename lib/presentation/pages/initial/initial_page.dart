@@ -25,7 +25,7 @@ class _InitialPageState extends State<InitialPage> {
 
   Future<void> _checkAuthAndNavigate() async {
     // Petit délai pour laisser le splash natif s'afficher
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 200));
 
     // Vérifier si l'onboarding a été vu
     final hasSeenOnboarding = _storageService.hasSeenOnboarding();
@@ -40,22 +40,17 @@ class _InitialPageState extends State<InitialPage> {
       // Afficher l'onboarding pour les nouveaux utilisateurs
       Get.offAllNamed(AppRoutes.onboarding);
     } else if (_authController.isLoggedIn.value) {
-      // Utilisateur connecté → Page principale
+      // Utilisateur connecté rediriger vers page principale
       Get.offAllNamed(AppRoutes.main);
     } else {
-      // Utilisateur non connecté → Page d'authentification
+      // Utilisateur non connecté rediriger vers page d'authentification
       Get.offAllNamed(AppRoutes.auth);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Page de chargement minimaliste (le splash natif est déjà affiché)
-    return const Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
+    // Page de chargement si les donner ne sont pas encore diso
+    return const Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }
-

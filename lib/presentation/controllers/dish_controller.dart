@@ -51,7 +51,7 @@ class DishController extends GetxController {
     }
   }
 
-  // Load dishes génériques
+  // Load dishes
   Future<void> loadDishes({
     int? categoryId,
     bool? isFeatured,

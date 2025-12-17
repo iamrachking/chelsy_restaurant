@@ -7,8 +7,8 @@ import 'package:share_plus/share_plus.dart';
 import 'package:chelsy_restaurant/core/utils/app_logger.dart';
 
 class InvoiceService {
-  /// Téléchargement de la facture PDF depuis le backend
-  /// Retourne le chemin du fichier téléchargé pour que je l'utilise ici
+  // Téléchargement de la facture PDF depuis le backend
+  // Retourne le chemin du fichier téléchargé pour que je l'utilise ici
   static Future<String?> downloadInvoice({
     required String invoiceBase64,
     required String filename,

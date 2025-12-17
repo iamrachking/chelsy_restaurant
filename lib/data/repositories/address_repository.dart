@@ -58,15 +58,12 @@ class AddressRepository {
         }
       }
 
-      return {
-        'success': false,
-        'message': errorMessage,
-      };
+      return {'success': false, 'message': errorMessage};
     } catch (e) {
       AppLogger.error('Create address error', e);
       String errorMessage = 'Erreur lors de la création de l\'adresse';
-      
-      // Gérer les erreurs DioException
+
+      // Gestion des erreurs DioException
       if (e is dio.DioException) {
         if (e.response != null) {
           final responseData = e.response!.data;
@@ -84,12 +81,12 @@ class AddressRepository {
             }
           }
         }
-        
+
         if (e.response?.statusCode == 422) {
           errorMessage = 'Erreur de validation. Vérifiez vos informations';
         }
       }
-      
+
       return {'success': false, 'message': errorMessage};
     }
   }
@@ -112,7 +109,7 @@ class AddressRepository {
         };
       }
 
-      // Extraire le message d'erreur détaillé
+      // Extration du message d'erreur détaillé
       String errorMessage = 'Erreur lors de la modification de l\'adresse';
       if (response.data is Map<String, dynamic>) {
         final responseData = response.data as Map<String, dynamic>;
@@ -131,15 +128,12 @@ class AddressRepository {
         }
       }
 
-      return {
-        'success': false,
-        'message': errorMessage,
-      };
+      return {'success': false, 'message': errorMessage};
     } catch (e) {
       AppLogger.error('Update address error', e);
       String errorMessage = 'Erreur lors de la modification de l\'adresse';
-      
-      // Gérer les erreurs DioException
+
+      // Géstion des erreurs DioException
       if (e is dio.DioException) {
         if (e.response != null) {
           final responseData = e.response!.data;
@@ -157,12 +151,12 @@ class AddressRepository {
             }
           }
         }
-        
+
         if (e.response?.statusCode == 422) {
           errorMessage = 'Erreur de validation. Vérifiez vos informations';
         }
       }
-      
+
       return {'success': false, 'message': errorMessage};
     }
   }
@@ -180,12 +174,15 @@ class AddressRepository {
       if (response.data['success'] == true) {
         return {
           'success': true,
-          'message': response.data['message'] ?? 'Adresse définie par défaut avec succès',
+          'message':
+              response.data['message'] ??
+              'Adresse définie par défaut avec succès',
         };
       }
 
       // Extraire le message d'erreur détaillé
-      String errorMessage = 'Erreur lors de la définition de l\'adresse par défaut';
+      String errorMessage =
+          'Erreur lors de la définition de l\'adresse par défaut';
       if (response.data is Map<String, dynamic>) {
         final responseData = response.data as Map<String, dynamic>;
         if (responseData['message'] != null) {
@@ -203,15 +200,12 @@ class AddressRepository {
         }
       }
 
-      return {
-        'success': false,
-        'message': errorMessage,
-      };
+      return {'success': false, 'message': errorMessage};
     } catch (e) {
       AppLogger.error('Set default address error', e);
-      String errorMessage = 'Erreur lors de la définition de l\'adresse par défaut';
-      
-      // Gérer les erreurs DioException
+      String errorMessage =
+          'Erreur lors de la définition de l\'adresse par défaut';
+      // Gestion des erreurs DioException
       if (e is dio.DioException) {
         if (e.response != null) {
           final responseData = e.response!.data;
@@ -229,12 +223,12 @@ class AddressRepository {
             }
           }
         }
-        
+
         if (e.response?.statusCode == 422) {
           errorMessage = 'Erreur de validation. Vérifiez vos informations';
         }
       }
-      
+
       return {'success': false, 'message': errorMessage};
     }
   }

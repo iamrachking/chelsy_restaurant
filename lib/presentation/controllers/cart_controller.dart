@@ -6,7 +6,6 @@ import 'package:chelsy_restaurant/core/utils/app_logger.dart';
 class CartController extends GetxController {
   final CartRepository _cartRepository = Get.find<CartRepository>();
 
-  // IMPORTANT: Utiliser Rx pour la réactivité
   final Rx<CartModel> cart = CartModel.empty().obs;
   final RxBool isLoading = false.obs;
 
@@ -102,7 +101,7 @@ class CartController extends GetxController {
     }
   }
 
-  // Mettre à jour un article
+  // Mettre à jour un element du panier
   Future<bool> updateCartItem({
     required int itemId,
     int? quantity,
@@ -150,7 +149,7 @@ class CartController extends GetxController {
     }
   }
 
-  // Retirer un article
+  // Retirer un element du panier
   Future<void> removeCartItem(int itemId) async {
     try {
       isLoading.value = true;

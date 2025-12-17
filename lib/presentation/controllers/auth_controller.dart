@@ -21,7 +21,7 @@ class AuthController extends GetxController {
     checkAuthStatus();
   }
 
-  // Check if user is logged in
+  // verifier si le user est connecte
   Future<void> checkAuthStatus() async {
     isLoggedIn.value = _storageService.isLoggedIn();
     if (isLoggedIn.value) {
@@ -29,7 +29,7 @@ class AuthController extends GetxController {
       if (userData != null) {
         currentUser.value = UserModel.fromJson(userData);
       }
-      // Refresh user data from API
+      // raffraichir les donnees du user depuis l'API
       await getCurrentUser();
     }
   }
@@ -63,7 +63,6 @@ class AuthController extends GetxController {
       );
 
       if (result['success'] == true) {
-        // Snackbar succès
         Get.snackbar(
           'Succès',
           result['message'] ?? 'Mot de passe réinitialisé avec succès',

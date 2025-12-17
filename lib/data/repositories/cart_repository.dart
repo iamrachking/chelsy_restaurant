@@ -116,9 +116,9 @@ class CartRepository {
       final data = <String, dynamic>{};
 
       if (quantity != null) data['quantity'] = quantity;
-      if (specialInstructions != null)
+      if (specialInstructions != null) {
         data['special_instructions'] = specialInstructions;
-
+      }
       AppLogger.debug('Update cart item $itemId request: $data');
 
       final response = await _apiService.put('/cart/items/$itemId', data: data);

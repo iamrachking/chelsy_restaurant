@@ -7,9 +7,6 @@ import 'package:chelsy_restaurant/data/models/user_model.dart';
 class ProfileRepository {
   final ApiService _apiService = Get.find<ApiService>();
 
-  // ------------------------------
-  // GET PROFILE
-  // ------------------------------
   Future<UserModel?> getProfile() async {
     try {
       final response = await _apiService.get('/profile');
@@ -26,9 +23,6 @@ class ProfileRepository {
     }
   }
 
-  // ------------------------------
-  // UPDATE PROFILE (TEXT FIELDS)
-  // ------------------------------
   Future<Map<String, dynamic>> updateProfile({
     String? firstname,
     String? lastname,
@@ -66,9 +60,6 @@ class ProfileRepository {
     }
   }
 
-  // ------------------------------
-  // CHANGE PASSWORD
-  // ------------------------------
   Future<Map<String, dynamic>> changePassword({
     required String currentPassword,
     required String newPassword,
@@ -94,9 +85,6 @@ class ProfileRepository {
     }
   }
 
-  // ------------------------------
-  // UPDATE PROFILE PICTURE (FINAL)
-  // ------------------------------
   Future<Map<String, dynamic>> updateProfilePicture(String imagePath) async {
     try {
       final file = await dio.MultipartFile.fromFile(

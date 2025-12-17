@@ -75,7 +75,7 @@ class AddressesPage extends StatelessWidget {
                         label: const Text('Adresse par défaut'),
                         backgroundColor: Theme.of(
                           context,
-                        ).colorScheme.primary.withOpacity(0.2),
+                        ).colorScheme.primary.withValues(alpha: 0.2),
                         padding: EdgeInsets.zero,
                         labelPadding: const EdgeInsets.symmetric(horizontal: 8),
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

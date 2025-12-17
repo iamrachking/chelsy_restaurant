@@ -79,7 +79,6 @@ class TrackingController extends GetxController {
         trackingData.value = data;
         errorMessage.value = '';
 
-        // Log pour déboguer
         AppLogger.debug('Tracking data updated: $data');
       } else {
         // Pas d'erreur critique, juste pas de données (commande pas en livraison)

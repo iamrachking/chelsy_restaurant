@@ -78,7 +78,7 @@ class CartPage extends StatelessWidget {
     dynamic item,
     CartController cartController,
   ) {
-    // CORRECTION: Calculer le prix total dynamiquement
+    //  Calcule du prix total dynamiquement
     final itemTotalPrice = item.unitPrice * item.quantity;
 
     return Card(
@@ -113,7 +113,7 @@ class CartPage extends StatelessWidget {
                   const SizedBox(height: 4),
 
                   Text(
-                    '${DateFormatter.formatCurrency(item.unitPrice)} / pièce',
+                    '${DateFormatter.formatCurrency(item.unitPrice)} / plat',
                     style: Theme.of(
                       context,
                     ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
@@ -165,7 +165,7 @@ class CartPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // CORRECTION: Utiliser le prix calculé dynamiquement
+                // Utiliseation du le prix calculé dynamiquement
                 Text(
                   DateFormatter.formatCurrency(itemTotalPrice),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -244,7 +244,7 @@ class CartPage extends StatelessWidget {
     dynamic cart,
     CartController cartController,
   ) {
-    // CORRECTION: Recalculer le total dynamiquement
+    // Recalculer le total dynamiquement
     final calculatedTotal = cart.items.fold<double>(
       0.0,
       (double sum, item) => sum + (item.unitPrice * item.quantity),
@@ -256,7 +256,7 @@ class CartPage extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, -5),
           ),
@@ -270,7 +270,9 @@ class CartPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '${cart.items.length} plat(s) différent(s)',
+                  (cart.items.length > 1)
+                      ? "${cart.items.length} plats différents"
+                      : '1 plat',
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 Text(
@@ -295,7 +297,7 @@ class CartPage extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                // CORRECTION: Utiliser le total calculé
+                //  Utilisation du total calculé
                 Text(
                   DateFormatter.formatCurrency(calculatedTotal),
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(

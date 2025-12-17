@@ -52,7 +52,6 @@ class _LoginPageState extends State<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 40),
-                // Logo
                 Icon(
                   Icons.restaurant,
                   size: 80,
@@ -73,7 +72,6 @@ class _LoginPageState extends State<LoginPage> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 48),
-                // Email field
                 CustomTextField(
                   controller: _emailController,
                   label: 'Email',
@@ -84,7 +82,6 @@ class _LoginPageState extends State<LoginPage> {
                   textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 16),
-                // Password field
                 CustomTextField(
                   controller: _passwordController,
                   label: 'Mot de passe',
@@ -108,7 +105,6 @@ class _LoginPageState extends State<LoginPage> {
                   onSubmitted: (_) => _handleLogin(),
                 ),
                 const SizedBox(height: 8),
-                // Forgot password
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
@@ -119,7 +115,6 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                // Login button
                 Obx(
                   () => CustomButton(
                     text: 'Se connecter',
@@ -131,7 +126,6 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                // Register link
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

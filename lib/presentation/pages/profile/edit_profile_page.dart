@@ -83,19 +83,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
       );
 
       if (success) {
-        // Snackbar succès
         Get.snackbar(
           "Succès",
           "Profil mis à jour avec succès",
           snackPosition: SnackPosition.TOP,
           duration: const Duration(seconds: 3),
         );
-
-        // Retour à la page précédente après un petit délai
         await Future.delayed(const Duration(milliseconds: 500));
         Get.back();
       } else {
-        // Snackbar erreur
         Get.snackbar(
           "Erreur",
           "Impossible de mettre à jour le profil",
@@ -157,7 +153,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 16),
-                // Date de naissance
                 InkWell(
                   onTap: _selectDate,
                   child: InputDecorator(
@@ -181,7 +176,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                // Genre
                 DropdownButtonFormField<String>(
                   value: _selectedGender,
                   decoration: InputDecoration(

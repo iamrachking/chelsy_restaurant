@@ -54,7 +54,7 @@ class DishRepository {
     }
   }
 
-  // Generic method to parse dishes safely
+  // methode generique pour parser les dish avec securite
   Future<List<DishModel>> _parseDishes(dynamic data) async {
     List<dynamic> dishesList = [];
 

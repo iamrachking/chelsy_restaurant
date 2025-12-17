@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 
 class AppTheme {
-  // Utiliser les couleurs centralisées depuis AppColors
+  // Utilisation des couleurs centralisées depuis AppColors
   static const Color primaryColor = AppColors.primary;
   static const Color secondaryColor = AppColors.secondary;
   static const Color accentColor = AppColors.accent;
@@ -178,7 +178,7 @@ class AppTheme {
     );
   }
 
-  // sombre Theme (optionnel pour plus tard)
+  // sombre Theme (optionnel pour plus tard si on na le temps)
   static ThemeData get darkTheme {
     return ThemeData(
       useMaterial3: true,

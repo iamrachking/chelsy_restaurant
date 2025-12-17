@@ -26,7 +26,183 @@ class OrderController extends GetxController {
     loadOrders();
   }
 
-  /// ==================== GESTION DES COMMANDES ====================
+  ///  createOrder
+  Future<Map<String, dynamic>> createOrder({
+    required String type,
+    int? addressId,
+    required String paymentMethod,
+    String? mobileMoneyProvider,
+    String? mobileMoneyNumber,
+    String? promoCode,
+    String? scheduledAt,
+    String? specialInstructions,
+  }) async {
+    try {
+      isLoading.value = true;
+
+      //  Log les paramètres reçus
+      AppLogger.debug('=== CREATING ORDER ===');
+      AppLogger.debug('Type: $type');
+      AppLogger.debug('Payment Method: $paymentMethod');
+      AppLogger.debug('Address ID: $addressId');
+      AppLogger.debug('Promo Code: $promoCode');
+      AppLogger.debug('Mobile Money Provider: $mobileMoneyProvider');
+      AppLogger.debug('Mobile Money Number: $mobileMoneyNumber');
+
+      //  Nettoyer le promo code
+      final cleanPromoCode = promoCode != null && promoCode.trim().isNotEmpty
+          ? promoCode.trim()
+          : null;
+
+      AppLogger.debug(
+        'Cleaned Promo Code: $cleanPromoCode (was: "$promoCode")',
+      );
+
+      //  Appeler le repository
+      AppLogger.debug('Calling OrderRepository.createOrder...');
+      final result = await _orderRepository.createOrder(
+        type: type,
+        addressId: addressId,
+        paymentMethod: paymentMethod,
+        mobileMoneyProvider: mobileMoneyProvider,
+        mobileMoneyNumber: mobileMoneyNumber,
+        promoCode: cleanPromoCode,
+        scheduledAt: scheduledAt,
+        specialInstructions: specialInstructions,
+      );
+
+      //  Log la réponse complète
+      AppLogger.debug('Order creation result received');
+      AppLogger.debug('Success: ${result['success']}');
+      AppLogger.debug('Message: ${result['message']}');
+
+      if (result['success'] == true) {
+        //  Extraire la commande
+        final order = result['order'] as OrderModel?;
+
+        if (order == null) {
+          AppLogger.error(
+            'OrderController.createOrder',
+            'Order is null despite success=true',
+          );
+          AppLogger.debug('Result keys: ${result.keys.toList()}');
+          AppLogger.debug('Full result: $result');
+
+          Get.snackbar(
+            'Erreur',
+            'Erreur lors de la création de la commande (order null)',
+            duration: const Duration(seconds: 3),
+          );
+
+          return {
+            'success': false,
+            'message': 'Commande null dans la réponse',
+            'result': result,
+          };
+        }
+
+        //  Log la commande créée
+        AppLogger.debug('Order created successfully!');
+        AppLogger.debug('Order ID: ${order.id}');
+        AppLogger.debug('Order Number: ${order.orderNumber}');
+        AppLogger.debug('Order Status: ${order.status}');
+        AppLogger.debug('Order Total: ${order.total}');
+        AppLogger.debug('Order Items Count: ${order.items.length}');
+
+        //  Extraire le paiement
+        final payment = result['payment'] as Map<String, dynamic>?;
+        AppLogger.debug('Payment data: $payment');
+
+        //  Stocker les données
+        paymentData.value = payment ?? {};
+        AppLogger.debug('Payment data stored in controller');
+
+        //  Rafraîchir la liste
+        AppLogger.debug('Refreshing orders list...');
+        await loadOrders(refresh: true);
+
+        AppLogger.debug('Order created successfully: ${order.orderNumber}');
+        AppLogger.debug('=== ORDER CREATION COMPLETE ===');
+
+        return {'success': true, 'order': order, 'payment': payment};
+      } else {
+        //  Gérer l'erreur du serveur
+        AppLogger.error(
+          'OrderController.createOrder',
+          'Server returned success=false',
+        );
+
+        final message = result['message'] ?? 'Erreur inconnue';
+        final errors = result['errors'] as Map<String, dynamic>?;
+        final error = result['error'];
+
+        AppLogger.debug('Error message: $message');
+        AppLogger.debug('Errors object: $errors');
+        AppLogger.debug('Error field: $error');
+        AppLogger.debug('Full result: $result');
+
+        //  Afficher l'erreur à l'utilisateur
+        if (errors != null && errors.isNotEmpty) {
+          // Construire un message avec les erreurs de validation
+          final errorLines = <String>[];
+          errors.forEach((key, value) {
+            if (value is List) {
+              errorLines.add('$key: ${value.join(", ")}');
+            } else {
+              errorLines.add('$key: $value');
+            }
+          });
+          final errorMessage = errorLines.join('\n');
+
+          AppLogger.debug('Showing validation errors: $errorMessage');
+
+          Get.snackbar(
+            'Erreur de validation',
+            errorMessage,
+            duration: const Duration(seconds: 4),
+            maxWidth: 300,
+          );
+        } else {
+          AppLogger.debug('Showing general error: $message');
+
+          Get.snackbar('Erreur', message, duration: const Duration(seconds: 3));
+        }
+
+        AppLogger.debug('=== ORDER CREATION FAILED ===');
+
+        return {
+          'success': false,
+          'message': message,
+          'error': error,
+          'errors': errors,
+          'fullResult': result,
+        };
+      }
+    } catch (e, stackTrace) {
+      //  Gérer les exceptions
+      AppLogger.error('OrderController.createOrder - EXCEPTION', e);
+      AppLogger.debug('Exception message: ${e.toString()}');
+      AppLogger.debug('Stack trace: $stackTrace');
+
+      Get.snackbar(
+        'Erreur critique',
+        'Une erreur est survenue: ${e.toString()}',
+        duration: const Duration(seconds: 4),
+      );
+
+      AppLogger.debug('=== ORDER CREATION CRASHED ===');
+
+      return {
+        'success': false,
+        'message': e.toString(),
+        'exception': e.toString(),
+        'stackTrace': stackTrace.toString(),
+      };
+    } finally {
+      isLoading.value = false;
+      AppLogger.debug('isLoading set to false');
+    }
+  }
 
   /// Charger la liste des commandes
   Future<void> loadOrders({bool refresh = false}) async {
@@ -85,73 +261,6 @@ class OrderController extends GetxController {
     }
   }
 
-  /// ==================== CRÉATION DE COMMANDE ====================
-
-  /// Créer une commande avec paiement
-  Future<Map<String, dynamic>> createOrder({
-    required String type, // 'delivery' ou 'pickup'
-    int? addressId,
-    required String paymentMethod, // 'card', 'cash', 'mobile_money'
-    String? mobileMoneyProvider, // 'MTN' ou 'Moov'
-    String? mobileMoneyNumber,
-    String? promoCode,
-    String? scheduledAt,
-    String? specialInstructions,
-  }) async {
-    try {
-      isLoading.value = true;
-
-      AppLogger.debug(
-        'Creating order: type=$type, payment=$paymentMethod, addressId=$addressId',
-      );
-
-      final result = await _orderRepository.createOrder(
-        type: type,
-        addressId: addressId,
-        paymentMethod: paymentMethod,
-        mobileMoneyProvider: mobileMoneyProvider,
-        mobileMoneyNumber: mobileMoneyNumber,
-        promoCode: promoCode,
-        scheduledAt: scheduledAt,
-        specialInstructions: specialInstructions,
-      );
-
-      if (result['success'] == true) {
-        final order = result['order'] as OrderModel;
-        final payment = result['payment'] as Map<String, dynamic>?;
-
-        paymentData.value = payment ?? {};
-
-        // Rafraîchir la liste des commandes
-        await loadOrders(refresh: true);
-
-        AppLogger.debug('Order created successfully: ${order.orderNumber}');
-
-        return {'success': true, 'order': order, 'payment': payment};
-      } else {
-        Get.snackbar(
-          'Erreur',
-          result['message'] ?? 'Erreur lors de la création',
-        );
-
-        return {
-          'success': false,
-          'message': result['message'],
-          'error': result['error'],
-        };
-      }
-    } catch (e, stack) {
-      AppLogger.error('OrderController.createOrder', e);
-      AppLogger.debug('Stack: $stack');
-
-      Get.snackbar('Erreur', 'Une erreur est survenue');
-
-      return {'success': false, 'message': e.toString()};
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
   /// Annuler une commande
   Future<bool> cancelOrder(int id, {String? reason}) async {
     try {
@@ -202,8 +311,6 @@ class OrderController extends GetxController {
     }
   }
 
-  /// ==================== PAIEMENTS STRIPE ====================
-
   /// Confirmer un paiement Stripe
   Future<bool> confirmStripePayment({
     required int orderId,
@@ -222,7 +329,6 @@ class OrderController extends GetxController {
       );
 
       if (result['success'] == true) {
-        // Rafraîchir la commande
         await getOrder(orderId);
 
         Get.snackbar('Succès', 'Paiement confirmé avec succès');
@@ -242,8 +348,6 @@ class OrderController extends GetxController {
       isPaymentProcessing.value = false;
     }
   }
-
-  /// ==================== PAIEMENTS MOBILE MONEY ====================
 
   /// Créer un paiement Mobile Money
   Future<Map<String, dynamic>> createMobileMoneyPayment({
@@ -302,7 +406,7 @@ class OrderController extends GetxController {
   /// Poll le statut Mobile Money jusqu'à confirmation
   Future<bool> pollMobileMoneyPaymentStatus({
     required int orderId,
-    int maxAttempts = 120, // 10 minutes max
+    int maxAttempts = 120,
     int intervalSeconds = 5,
   }) async {
     try {
@@ -319,29 +423,24 @@ class OrderController extends GetxController {
           );
 
           if (status == 'approved') {
-            // Paiement réussi
             await getOrder(orderId);
             Get.snackbar('Succès', 'Paiement confirmé avec succès');
             return true;
           } else if (status == 'declined') {
-            // Paiement refusé
             Get.snackbar('Erreur', 'Paiement refusé par le fournisseur');
             return false;
           } else if (status == 'canceled') {
-            // Paiement annulé
             Get.snackbar('Annulé', 'Paiement annulé par l\'utilisateur');
             return false;
           }
         }
 
-        // Attendre avant la prochaine vérification pour eviter des conflit ouais
         attempts++;
         if (attempts < maxAttempts) {
           await Future.delayed(Duration(seconds: intervalSeconds));
         }
       }
 
-      // Timeout
       Get.snackbar('Délai dépassé', 'Vérifiez votre transaction Mobile Money');
       return false;
     } catch (e) {
@@ -350,8 +449,6 @@ class OrderController extends GetxController {
       return false;
     }
   }
-
-  /// ==================== FACTURES ====================
 
   /// Obtenir la facture en base64
   Future<Map<String, dynamic>?> getInvoice(int orderId) async {
@@ -363,9 +460,6 @@ class OrderController extends GetxController {
       return null;
     }
   }
-  // Ajouter ces propriétés dans OrderController (dans la classe)
-
-  // ==================== TÉLÉCHARGEMENT DE FACTURES ====================
 
   /// Télécharger la facture d'une commande
   Future<bool> downloadOrderInvoice(int orderId) async {
@@ -373,7 +467,6 @@ class OrderController extends GetxController {
       isDownloadingInvoice.value = true;
       downloadProgress.value = 'Récupération de la facture...';
 
-      // Récupérer la facture depuis le backend
       final invoiceData = await _orderRepository.downloadInvoice(orderId);
 
       if (invoiceData == null) {
@@ -404,7 +497,6 @@ class OrderController extends GetxController {
         return false;
       }
 
-      // Télécharger et sauvegarder le fichier
       final filePath = await InvoiceService.downloadInvoice(
         invoiceBase64: base64String,
         filename: filename,
@@ -440,7 +532,6 @@ class OrderController extends GetxController {
       isDownloadingInvoice.value = true;
       downloadProgress.value = 'Préparation du fichier...';
 
-      // D'abord, télécharger la facture
       final invoiceData = await _orderRepository.downloadInvoice(orderId);
 
       if (invoiceData == null || invoiceData['success'] != true) {
@@ -471,7 +562,6 @@ class OrderController extends GetxController {
 
       downloadProgress.value = 'Ouverture du fichier...';
 
-      // Ouvrir le fichier
       final opened = await InvoiceService.openInvoice(filePath);
 
       if (!opened) {
@@ -492,7 +582,6 @@ class OrderController extends GetxController {
       isDownloadingInvoice.value = true;
       downloadProgress.value = 'Préparation du partage...';
 
-      // D'abord, télécharger la facture
       final invoiceData = await _orderRepository.downloadInvoice(orderId);
 
       if (invoiceData == null || invoiceData['success'] != true) {
@@ -523,7 +612,6 @@ class OrderController extends GetxController {
 
       downloadProgress.value = 'Partage en cours...';
 
-      // Partager le fichier
       final shared = await InvoiceService.shareInvoice(filePath);
 
       if (!shared) {

@@ -27,7 +27,6 @@ class ApiService extends GetxService {
     _dio.interceptors.add(
       dio.InterceptorsWrapper(
         onRequest: (options, handler) {
-          // Add token to headers if available
           final token = _storageService.getToken();
           if (token != null) {
             options.headers['Authorization'] = 'Bearer $token';
@@ -150,13 +149,12 @@ class ApiService extends GetxService {
       final statusCode = error.response?.statusCode;
       final data = error.response?.data;
 
-      // Extraire le message d'erreur de l'API
+      // Extraction du message d'erreur de l'API
       if (data is Map<String, dynamic>) {
-        // Essayer d'extraire le message d'erreur
         if (data['message'] != null) {
           errorMessage = data['message'] as String;
         } else if (data['errors'] != null) {
-          // Gérer les erreurs de validation Laravel
+          // Gestion des erreurs de validation Laravel
           final errors = data['errors'] as Map<String, dynamic>;
           final firstError = errors.values.first;
           if (firstError is List && firstError.isNotEmpty) {

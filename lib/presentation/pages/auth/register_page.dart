@@ -80,7 +80,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
                 ),
                 const SizedBox(height: 32),
-                // Firstname
                 CustomTextField(
                   controller: _firstnameController,
                   label: 'Prénom',
@@ -90,7 +89,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 16),
-                // Lastname
                 CustomTextField(
                   controller: _lastnameController,
                   label: 'Nom',
@@ -100,7 +98,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 16),
-                // Email
                 CustomTextField(
                   controller: _emailController,
                   label: 'Email',
@@ -111,11 +108,11 @@ class _RegisterPageState extends State<RegisterPage> {
                   textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 16),
-                // Phone
+
                 CustomTextField(
                   controller: _phoneController,
                   label: 'Téléphone (optionnel)',
-                  hint: '+229 12 34 56 78',
+                  hint: '+229 01 10 34 56 78',
                   keyboardType: TextInputType.phone,
                   prefixIcon: const Icon(Icons.phone_outlined),
                   validator: (value) =>
@@ -123,7 +120,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 16),
-                // Password
                 CustomTextField(
                   controller: _passwordController,
                   label: 'Mot de passe',
@@ -146,7 +142,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 16),
-                // Password confirmation
                 CustomTextField(
                   controller: _passwordConfirmationController,
                   label: 'Confirmer le mot de passe',
@@ -174,7 +169,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   onSubmitted: (_) => _handleRegister(),
                 ),
                 const SizedBox(height: 32),
-                // Register button
                 Obx(
                   () => CustomButton(
                     text: 'S\'inscrire',
@@ -186,7 +180,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                // Login link
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

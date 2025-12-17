@@ -76,18 +76,22 @@ class FavoriteController extends GetxController {
     }
   }
 
-  // Toggle favorite - version optimisée qui utilise favoriteIds
+  // Toggle favorite  qui utilise favoriteIds
   Future<void> toggleFavorite(int dishId) async {
     if (favoriteIds.contains(dishId)) {
       // Le plat est déjà en favoris, on le retire
       // On doit trouver le favorite ID depuis l'API
-      final favoriteId = await _favoriteRepository.getFavoriteIdByDishId(dishId);
+      final favoriteId = await _favoriteRepository.getFavoriteIdByDishId(
+        dishId,
+      );
       if (favoriteId != null) {
         await removeFavorite(favoriteId);
       } else {
         // Si on ne trouve pas l'ID, on recharge les favoris et on réessaye
         await loadFavorites();
-        final favoriteId2 = await _favoriteRepository.getFavoriteIdByDishId(dishId);
+        final favoriteId2 = await _favoriteRepository.getFavoriteIdByDishId(
+          dishId,
+        );
         if (favoriteId2 != null) {
           await removeFavorite(favoriteId2);
         }
@@ -103,4 +107,3 @@ class FavoriteController extends GetxController {
     return favoriteIds.contains(dishId);
   }
 }
-

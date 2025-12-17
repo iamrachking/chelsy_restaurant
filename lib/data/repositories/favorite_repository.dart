@@ -13,8 +13,8 @@ class FavoriteRepository {
       if (response.data['success'] == true) {
         final data = response.data['data'];
         List<dynamic> favoritesList;
-        
-        // Gérer différents formats de réponse
+
+        // Gestion des différents formats de réponse
         if (data is Map<String, dynamic> && data['favorites'] != null) {
           favoritesList = data['favorites'] as List<dynamic>;
         } else if (data is List<dynamic>) {
@@ -22,14 +22,15 @@ class FavoriteRepository {
         } else {
           favoritesList = [];
         }
-        
+
         return favoritesList
             .map((f) {
               try {
                 // Le favori peut être directement un dish ou avoir un champ 'dish'
                 Map<String, dynamic> dishData;
                 if (f is Map<String, dynamic>) {
-                  if (f.containsKey('dish') && f['dish'] is Map<String, dynamic>) {
+                  if (f.containsKey('dish') &&
+                      f['dish'] is Map<String, dynamic>) {
                     dishData = f['dish'] as Map<String, dynamic>;
                   } else {
                     dishData = f;
@@ -77,7 +78,7 @@ class FavoriteRepository {
     }
   }
 
-  // Check if dish is favorite (by dish_id)
+  // Check if dish is favorite by dish_id
   Future<int?> getFavoriteIdByDishId(int dishId) async {
     try {
       final favorites = await getFavorites();
@@ -86,7 +87,8 @@ class FavoriteRepository {
           // We need to get the favorite ID from the API response
           final response = await _apiService.get('/favorites');
           if (response.data['success'] == true) {
-            final favoritesList = response.data['data']['favorites'] as List<dynamic>;
+            final favoritesList =
+                response.data['data']['favorites'] as List<dynamic>;
             for (var fav in favoritesList) {
               if (fav['dish_id'] == dishId) {
                 return fav['id'] as int;
@@ -102,4 +104,3 @@ class FavoriteRepository {
     }
   }
 }
-

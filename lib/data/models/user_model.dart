@@ -31,15 +31,19 @@ class UserModel {
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     String? avatarUrl = json['avatar'] as String?;
-    // Convertir les URLs relatives en URLs complètes
-    if (avatarUrl != null && avatarUrl.isNotEmpty && !avatarUrl.startsWith('http')) {
-      if (avatarUrl.startsWith('avatars/') || avatarUrl.startsWith('/avatars/')) {
-        avatarUrl = 'https://chelsy-api.cabinet-xaviertermeau.com/storage/${avatarUrl.replaceFirst(RegExp(r'^/'), '')}';
+    // Convertion des URLs relatives en URLs complètes
+    if (avatarUrl != null &&
+        avatarUrl.isNotEmpty &&
+        !avatarUrl.startsWith('http')) {
+      if (avatarUrl.startsWith('avatars/') ||
+          avatarUrl.startsWith('/avatars/')) {
+        avatarUrl =
+            'https://chelsy-api.cabinet-xaviertermeau.com/storage/${avatarUrl.replaceFirst(RegExp(r'^/'), '')}';
       } else if (avatarUrl.startsWith('storage/')) {
         avatarUrl = 'https://chelsy-api.cabinet-xaviertermeau.com/$avatarUrl';
       }
     }
-    
+
     return UserModel(
       id: json['id'] as int,
       firstname: json['firstname'] as String,
@@ -75,5 +79,3 @@ class UserModel {
     };
   }
 }
-
-

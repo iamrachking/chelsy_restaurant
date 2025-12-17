@@ -70,7 +70,7 @@ class StorageService extends GetxService {
     return _prefs.getBool(AppConstants.keyIsLoggedIn) ?? false;
   }
 
-  // Language pas vraiment encore implementer
+  // Language pas vraiment encore implementer et cest pas sur que je le ferai
   Future<void> saveLanguage(String language) async {
     await _prefs.setString(AppConstants.keyLanguage, language);
   }

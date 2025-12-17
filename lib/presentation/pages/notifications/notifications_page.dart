@@ -29,7 +29,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
   Future<void> _loadNotifications() async {
     // Pour l'instant, on simule les notifications
-    // TODO: Charger depuis l'API quand disponible
+    // TODO: Charger depuis l'API quand disponible , mais cest compliquer je laisse d'abord
     setState(() {
       notifications = [
         {
@@ -171,7 +171,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     child: Container(
                       color: isRead
                           ? Colors.transparent
-                          : AppColors.primary.withOpacity(0.05),
+                          : AppColors.primary.withValues(alpha: .05),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 12,
@@ -183,7 +183,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                             radius: 24,
                             backgroundColor: _getColorForType(
                               notification['type'],
-                            ).withOpacity(0.2),
+                            ).withValues(alpha: .2),
                             child: Icon(
                               _getIconForType(notification['type']),
                               color: _getColorForType(notification['type']),

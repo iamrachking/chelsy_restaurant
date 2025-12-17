@@ -20,7 +20,6 @@ class _AuthPageState extends State<AuthPage> {
       body: SafeArea(
         child: Stack(
           children: [
-            // Top section with primary color and wave at bottom
             Positioned(
               top: 0,
               left: 0,
@@ -34,7 +33,6 @@ class _AuthPageState extends State<AuthPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Logo CHELSY
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -45,12 +43,11 @@ class _AuthPageState extends State<AuthPage> {
                         ],
                       ),
                       const SizedBox(height: 4),
-                      // Welcome message
                       Text(
                         'Bienvenue dans votre nouvelle safe place.',
                         style: TextStyle(
                           fontSize: 16,
-                          color: AppColors.white.withOpacity(0.9),
+                          color: AppColors.white.withValues(alpha: 0.9),
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -59,7 +56,6 @@ class _AuthPageState extends State<AuthPage> {
                 ),
               ),
             ),
-            // Bottom section with white background and top rounded corners
             Positioned(
               bottom: 0,
               left: 0,
@@ -89,7 +85,7 @@ class _AuthPageState extends State<AuthPage> {
                           children: [
                             Expanded(
                               child: _buildToggleButton(
-                                'S\'inscrire',
+                                "S'inscrire",
                                 !_isLogin,
                                 onTap: () => setState(() => _isLogin = false),
                               ),
@@ -105,10 +101,8 @@ class _AuthPageState extends State<AuthPage> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      // Form content
                       _isLogin ? const LoginForm() : const RegisterForm(),
                       const SizedBox(height: 24),
-                      // Social login
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -122,7 +116,6 @@ class _AuthPageState extends State<AuthPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // Facebook button
                           Container(
                             width: 50,
                             height: 50,
@@ -136,7 +129,6 @@ class _AuthPageState extends State<AuthPage> {
                             ),
                           ),
                           const SizedBox(width: 16),
-                          // Google button
                           Container(
                             width: 50,
                             height: 50,
@@ -165,7 +157,6 @@ class _AuthPageState extends State<AuthPage> {
                         ],
                       ),
                       const SizedBox(height: 32),
-                      // Footer links
                       Wrap(
                         alignment: WrapAlignment.center,
                         spacing: 4,

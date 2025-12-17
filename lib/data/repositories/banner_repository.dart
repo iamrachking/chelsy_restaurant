@@ -21,7 +21,7 @@ class BannerRepository {
               .where((banner) => banner.isActive)
               .toList();
 
-          // Trier par order (croissant)
+          // Trier par order croissant
           bannerList.sort((a, b) => a.order.compareTo(b.order));
 
           return bannerList;

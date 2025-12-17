@@ -22,7 +22,6 @@ class CategoryBottomSheet extends StatelessWidget {
           ),
           child: Column(
             children: [
-              // Handle bar
               Container(
                 margin: const EdgeInsets.only(top: 12),
                 width: 40,
@@ -32,7 +31,7 @@ class CategoryBottomSheet extends StatelessWidget {
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              // Title
+
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: Row(
@@ -49,7 +48,6 @@ class CategoryBottomSheet extends StatelessWidget {
                   ],
                 ),
               ),
-              // Categories grid
               Expanded(
                 child: GridView.builder(
                   controller: scrollController,
@@ -66,7 +64,10 @@ class CategoryBottomSheet extends StatelessWidget {
                     return GestureDetector(
                       onTap: () {
                         Get.back();
-                        Get.toNamed(AppRoutes.categoryDishes, arguments: category);
+                        Get.toNamed(
+                          AppRoutes.categoryDishes,
+                          arguments: category,
+                        );
                       },
                       child: Column(
                         children: [
@@ -83,7 +84,11 @@ class CategoryBottomSheet extends StatelessWidget {
                                     : null,
                               ),
                               child: category.image == null
-                                  ? Icon(Icons.restaurant, size: 40, color: Colors.grey[400])
+                                  ? Icon(
+                                      Icons.restaurant,
+                                      size: 40,
+                                      color: Colors.grey[400],
+                                    )
                                   : null,
                             ),
                           ),
@@ -108,4 +113,3 @@ class CategoryBottomSheet extends StatelessWidget {
     );
   }
 }
-

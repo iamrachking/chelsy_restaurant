@@ -28,7 +28,6 @@ class ProfilePage extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              // Profile header
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(24),
@@ -92,7 +91,6 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              // Menu items
               _buildMenuItem(
                 context,
                 icon: Icons.person_outline,

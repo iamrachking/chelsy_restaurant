@@ -7,7 +7,170 @@ import 'package:chelsy_restaurant/data/models/order_model.dart';
 class OrderRepository {
   final ApiService _apiService = Get.find<ApiService>();
 
-  /// Récupérer la liste des commandes avec pagination
+  // creation de commande
+  Future<Map<String, dynamic>> createOrder({
+    required String type,
+    int? addressId,
+    required String paymentMethod,
+    String? mobileMoneyProvider,
+    String? mobileMoneyNumber,
+    String? promoCode,
+    String? scheduledAt,
+    String? specialInstructions,
+  }) async {
+    try {
+      //  Construire les données avec vérification du promo code
+      final data = <String, dynamic>{
+        'type': type,
+        'payment_method': paymentMethod,
+        if (addressId != null) 'address_id': addressId,
+        if (mobileMoneyProvider != null)
+          'mobile_money_provider': mobileMoneyProvider,
+        if (mobileMoneyNumber != null) 'mobile_money_number': mobileMoneyNumber,
+        // Vérifier que promo_code n'est pas vide
+        if (promoCode != null && promoCode.isNotEmpty) 'promo_code': promoCode,
+        if (scheduledAt != null) 'scheduled_at': scheduledAt,
+        if (specialInstructions != null)
+          'special_instructions': specialInstructions,
+      };
+
+      //  Log avant l'envoi
+      AppLogger.debug('Creating order with data: $data');
+      AppLogger.debug(
+        'Order type: $type, Payment: $paymentMethod, PromoCode: $promoCode',
+      );
+
+      //  Faire la requête
+      final response = await _apiService.post('/orders', data: data);
+
+      //  Vérifier que la réponse n'est pas null
+      if (response.data == null) {
+        AppLogger.error(
+          'OrderRepository.createOrder',
+          'Response.data is completely null',
+        );
+        throw Exception('Response data is null');
+      }
+
+      //  Log la réponse complète pour inspection
+      AppLogger.debug('Order creation response status: ${response.statusCode}');
+      AppLogger.debug('Order creation full response: ${response.data}');
+
+      //  Vérifier success
+      if (response.data['success'] == true) {
+        AppLogger.debug('Server responded with success=true');
+
+        //  Extraire les données
+        final responseData = response.data['data'] as Map<String, dynamic>?;
+
+        if (responseData == null) {
+          AppLogger.error(
+            'OrderRepository.createOrder',
+            'Response data is null even though success=true. Full response: ${response.data}',
+          );
+          return {
+            'success': false,
+            'message': 'Données de réponse vides',
+            'fullResponse': response.data,
+          };
+        }
+
+        AppLogger.debug(
+          'Response data structure: ${responseData.keys.toList()}',
+        );
+
+        //  Extraire la commande
+        final orderJson = responseData['order'] as Map<String, dynamic>?;
+
+        if (orderJson == null) {
+          AppLogger.error(
+            'OrderRepository.createOrder',
+            'Order object is null in response. Response data keys: ${responseData.keys.toList()}, Full response data: $responseData',
+          );
+          return {
+            'success': false,
+            'message': 'Commande non trouvée dans la réponse',
+            'responseData': responseData,
+          };
+        }
+
+        AppLogger.debug('Order JSON keys: ${orderJson.keys.toList()}');
+        AppLogger.debug('Order JSON: $orderJson');
+
+        //  Parser la commande
+        try {
+          AppLogger.debug('Starting to parse order from JSON...');
+          final order = OrderModel.fromJson(orderJson);
+
+          AppLogger.debug(
+            'Order parsed successfully: id=${order.id}, orderNumber=${order.orderNumber}, status=${order.status}',
+          );
+
+          // Extraire le paiement
+          final paymentJson = responseData['payment'] as Map<String, dynamic>?;
+
+          AppLogger.debug('Payment data: $paymentJson');
+
+          //  Retourner le succès
+          return {
+            'success': true,
+            'message': response.data['message'] ?? 'Commande créée avec succès',
+            'order': order,
+            'payment': paymentJson,
+          };
+        } catch (parseError) {
+          AppLogger.error(
+            'OrderRepository.createOrder - PARSING ERROR',
+            parseError,
+          );
+          AppLogger.debug('Failed to parse order JSON: $orderJson');
+          AppLogger.debug('Parsing error details: $parseError');
+
+          return {
+            'success': false,
+            'message':
+                'Erreur lors du parsing de la commande: ${parseError.toString()}',
+            'rawOrder': orderJson,
+            'parseError': parseError.toString(),
+          };
+        }
+      } else {
+        // Gestion des erreurs du serveur (success=false)
+        AppLogger.error(
+          'OrderRepository.createOrder',
+          'Server returned success=false',
+        );
+
+        AppLogger.debug('Server error message: ${response.data['message']}');
+        AppLogger.debug('Server error object: ${response.data['error']}');
+        AppLogger.debug('Server validation errors: ${response.data['errors']}');
+
+        return {
+          'success': false,
+          'message':
+              response.data['message'] ??
+              'Erreur lors de la création de la commande',
+          'error': response.data['error'],
+          'errors': response.data['errors'], // Les erreurs de validation
+          'fullResponse': response.data,
+        };
+      }
+    } catch (e, stackTrace) {
+      //  Gestion des exceptions
+      AppLogger.error('OrderRepository.createOrder - EXCEPTION', e);
+      AppLogger.debug('Exception details: $e');
+      AppLogger.debug('Stack trace: $stackTrace');
+
+      return {
+        'success': false,
+        'message': 'Erreur: ${e.toString()}',
+        'exception': e.toString(),
+        'stackTrace': stackTrace.toString(),
+      };
+    }
+  }
+
+  // recuperation des commandes
   Future<Map<String, dynamic>> getOrders({
     int page = 1,
     int perPage = AppConstants.defaultPageSize,
@@ -36,7 +199,6 @@ class OrderRepository {
         final ordersList = data['orders'] as List<dynamic>? ?? [];
         final pagination = data['pagination'] as Map<String, dynamic>?;
 
-        //  Parser les commandes de manière sécurisée
         final orders = <OrderModel>[];
         for (final o in ordersList) {
           try {
@@ -45,7 +207,6 @@ class OrderRepository {
             }
           } catch (e) {
             AppLogger.error('Failed to parse order', e);
-            // Continuer avec les autres commandes
           }
         }
 
@@ -69,88 +230,6 @@ class OrderRepository {
     }
   }
 
-  /// Créer une nouvelle commande
-  Future<Map<String, dynamic>> createOrder({
-    required String type,
-    int? addressId,
-    required String paymentMethod,
-    String? mobileMoneyProvider,
-    String? mobileMoneyNumber,
-    String? promoCode,
-    String? scheduledAt,
-    String? specialInstructions,
-  }) async {
-    try {
-      final data = <String, dynamic>{
-        'type': type,
-        'payment_method': paymentMethod,
-        if (addressId != null) 'address_id': addressId,
-        if (mobileMoneyProvider != null)
-          'mobile_money_provider': mobileMoneyProvider,
-        if (mobileMoneyNumber != null) 'mobile_money_number': mobileMoneyNumber,
-        if (promoCode != null) 'promo_code': promoCode,
-        if (scheduledAt != null) 'scheduled_at': scheduledAt,
-        if (specialInstructions != null)
-          'special_instructions': specialInstructions,
-      };
-
-      AppLogger.debug('Creating order with data: $data');
-
-      final response = await _apiService.post('/orders', data: data);
-
-      if (response.data == null) {
-        throw Exception('Response data is null');
-      }
-
-      if (response.data['success'] == true) {
-        final responseData = response.data['data'] as Map<String, dynamic>?;
-
-        if (responseData == null) {
-          return {'success': false, 'message': 'Données de réponse vides'};
-        }
-
-        final orderJson = responseData['order'] as Map<String, dynamic>?;
-
-        if (orderJson == null) {
-          return {
-            'success': false,
-            'message': 'Commande non trouvée dans la réponse',
-          };
-        }
-
-        try {
-          final order = OrderModel.fromJson(orderJson);
-          final paymentJson = responseData['payment'] as Map<String, dynamic>?;
-
-          return {
-            'success': true,
-            'message': response.data['message'] ?? 'Commande créée avec succès',
-            'order': order,
-            'payment': paymentJson,
-          };
-        } catch (e) {
-          AppLogger.error('Failed to parse order from response', e);
-          return {
-            'success': false,
-            'message': 'Erreur lors du parsing de la commande: ${e.toString()}',
-          };
-        }
-      }
-
-      return {
-        'success': false,
-        'message':
-            response.data['message'] ??
-            'Erreur lors de la création de la commande',
-        'error': response.data['error'],
-      };
-    } catch (e) {
-      AppLogger.error('OrderRepository.createOrder', e);
-      return {'success': false, 'message': 'Erreur: ${e.toString()}'};
-    }
-  }
-
-  /// Récupérer les détails d'une commande
   Future<OrderModel?> getOrder(int id) async {
     try {
       final response = await _apiService.get('/orders/$id');
@@ -176,7 +255,6 @@ class OrderRepository {
     }
   }
 
-  /// Annuler une commande
   Future<Map<String, dynamic>> cancelOrder(
     int id, {
     String reason = 'Annulation par le client',
@@ -201,7 +279,6 @@ class OrderRepository {
     }
   }
 
-  /// Recommander une commande
   Future<bool> reorder(int orderId) async {
     try {
       final response = await _apiService.post('/orders/$orderId/reorder');
@@ -215,7 +292,6 @@ class OrderRepository {
     }
   }
 
-  /// Obtenir la facture en base64
   Future<Map<String, dynamic>?> getInvoice(int orderId) async {
     try {
       final response = await _apiService.get('/orders/$orderId/invoice');
@@ -233,7 +309,6 @@ class OrderRepository {
     }
   }
 
-  /// Confirmer un paiement Stripe
   Future<Map<String, dynamic>> confirmStripePayment({
     required int orderId,
     required String paymentIntentId,
@@ -263,7 +338,6 @@ class OrderRepository {
     }
   }
 
-  /// Créer un paiement Mobile Money
   Future<Map<String, dynamic>> createMobileMoneyPayment({
     required int orderId,
     required String provider,
@@ -313,7 +387,6 @@ class OrderRepository {
     }
   }
 
-  /// Vérifier le statut d'un paiement Mobile Money
   Future<Map<String, dynamic>> checkMobileMoneyStatus(int orderId) async {
     try {
       final response = await _apiService.post(
@@ -390,7 +463,6 @@ class OrderRepository {
         return null;
       }
 
-      // Si la réponse est un succès
       if (response.data['success'] == true) {
         final data = response.data['data'] as Map<String, dynamic>?;
 
@@ -398,7 +470,6 @@ class OrderRepository {
           return {'success': false, 'message': 'Données de suivi vides'};
         }
 
-        // Retourner les données de suivi avec le succès
         return {
           'success': true,
           'data': {
@@ -411,7 +482,6 @@ class OrderRepository {
         };
       }
 
-      // Cas où la commande n'est pas en livraison
       return {
         'success': false,
         'message':

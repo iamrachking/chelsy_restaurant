@@ -25,7 +25,7 @@ class _SplashPageState extends State<SplashPage>
   void initState() {
     super.initState();
     _setupAnimations();
-    _animationController.forward(); // joue l’animation une seule fois
+    _animationController.forward();
     _checkAuthAndNavigate();
   }
 

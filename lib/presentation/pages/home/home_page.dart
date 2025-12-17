@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
   );
   final BannerController bannerController = Get.find<BannerController>();
   final TextEditingController _searchController = TextEditingController();
-  final int _maxDishesToShow = 6; // Limite de plats à afficher
+  final int _maxDishesToShow = 8; // Limite de plats à afficher
 
   @override
   void dispose() {
@@ -57,7 +57,6 @@ class _HomePageState extends State<HomePage> {
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            // Custom AppBar
             SliverAppBar(
               floating: true,
               pinned: true,
@@ -133,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-            // Search field
+            // barre de recherche
             SliverToBoxAdapter(
               child: SearchField(
                 controller: _searchController,
@@ -141,17 +140,15 @@ class _HomePageState extends State<HomePage> {
                 hint: 'Rechercher un plat...',
               ),
             ),
-            // Banner carousel
+            // Banniere carousel
             SliverToBoxAdapter(
               child: Obx(() {
                 final banners = bannerController.banners;
 
-                // Si aucune bannière → ne rien afficher
+                // Si aucune bannière  ne rien afficher
                 if (banners.isEmpty) {
                   return SizedBox(height: bannerHeight);
                 }
-
-                // Sinon → afficher les vraies bannières
                 return BannerCarousel(
                   banners: banners,
                   height: bannerHeight,
@@ -161,7 +158,7 @@ class _HomePageState extends State<HomePage> {
             ),
 
             const SliverToBoxAdapter(child: SizedBox(height: 16)),
-            // Navigation menu
+            // menu de navigation
             SliverToBoxAdapter(
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -216,7 +213,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 24)),
-            // Categories section
+            // categories section
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -294,7 +291,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 12)),
-            // Dishes grid (limited)
+            // Dishes grid limiter en fonction du nombre specifier
             Obx(() {
               if (dishController.isLoading.value &&
                   dishController.dishes.isEmpty) {
@@ -361,7 +358,7 @@ class _HomePageState extends State<HomePage> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: AppColors.primary, size: 24),
@@ -394,7 +391,7 @@ class _HomePageState extends State<HomePage> {
               height: 70,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 image: category.image != null
                     ? DecorationImage(
                         image: NetworkImage(category.image!),

@@ -18,9 +18,7 @@ class ProfileController extends GetxController {
     loadProfile();
   }
 
-  // ---------------------------------------------------------------------------
-  // Load profile
-  // ---------------------------------------------------------------------------
+  /// Load profile
   Future<void> loadProfile() async {
     try {
       isLoading.value = true;
@@ -34,9 +32,7 @@ class ProfileController extends GetxController {
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // Update profile info
-  // ---------------------------------------------------------------------------
+  /// Update profile info
   Future<bool> updateProfile({
     String? firstname,
     String? lastname,
@@ -88,9 +84,7 @@ class ProfileController extends GetxController {
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // Change password
-  // ---------------------------------------------------------------------------
+  /// Change password
   Future<bool> changePassword({
     required String currentPassword,
     required String newPassword,
@@ -132,9 +126,7 @@ class ProfileController extends GetxController {
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // Update profile picture
-  // ---------------------------------------------------------------------------
+  /// Update profile picture
   Future<bool> updateProfilePicture(String imagePath) async {
     try {
       isLoading.value = true;

@@ -47,12 +47,12 @@ class _OrderTrackingPageState extends State<OrderTrackingPage> {
       body: Obx(() {
         final order = _orderController.selectedOrder.value;
 
-        // ⏳ Chargement
+        //  Chargement
         if (order == null) {
           return const LoadingWidget();
         }
 
-        // 🚫 Pas encore en livraison
+        //  Pas encore en livraison
         if (order.status != 'out_for_delivery' && order.status != 'ready') {
           return Center(
             child: Column(
@@ -78,7 +78,7 @@ class _OrderTrackingPageState extends State<OrderTrackingPage> {
           );
         }
 
-        // 📡 Données de tracking
+        //  Données de tracking
         final driverPosition = _trackingController.driverPosition;
         final driverInfo = _trackingController.driverInfo;
         final etaMinutes = _trackingController.etaMinutes;
@@ -101,7 +101,7 @@ class _OrderTrackingPageState extends State<OrderTrackingPage> {
           );
         }
 
-        // 📍 Pas encore de position
+        //  Pas encore de position
         if (driverLatLng == null && destinationLatLng == null) {
           return Center(
             child: Column(
@@ -127,10 +127,10 @@ class _OrderTrackingPageState extends State<OrderTrackingPage> {
             destinationLatLng ??
             const LatLng(6.372477, 2.354006);
 
-        // 🗺️ Carte + Infos
+        // Carte + Infos
         return Column(
           children: [
-            /// 🗺️ CARTE OPENSTREETMAP
+            ///  CARTE OPENSTREETMAP
             Expanded(
               flex: 2,
               child: FlutterMap(
@@ -171,7 +171,7 @@ class _OrderTrackingPageState extends State<OrderTrackingPage> {
               ),
             ),
 
-            /// ℹ️ INFORMATIONS
+            ///  INFORMATIONS
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(

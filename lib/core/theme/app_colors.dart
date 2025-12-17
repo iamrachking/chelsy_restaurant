@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // Primary Colors (Marron foncé des maquettes)
-  static const Color primary = Color(0xFF301911); // Marron foncé
+  static const Color primary = Color(0xFF301911);
   static const Color primaryLight = Color(0xFF8D6E63);
   static const Color primaryDark = Color(0xFF3E2723);
 
