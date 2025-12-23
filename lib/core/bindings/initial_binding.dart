@@ -2,6 +2,7 @@ import 'package:chelsy_restaurant/data/repositories/address_repository.dart';
 import 'package:chelsy_restaurant/data/repositories/favorite_repository.dart';
 import 'package:chelsy_restaurant/data/repositories/order_repository.dart';
 import 'package:chelsy_restaurant/data/repositories/promo_repository.dart';
+import 'package:chelsy_restaurant/data/repositories/review_repository.dart';
 import 'package:get/get.dart';
 import 'package:chelsy_restaurant/data/repositories/banner_repository.dart';
 import 'package:chelsy_restaurant/data/repositories/profile_repository.dart';
@@ -29,7 +30,7 @@ class InitialBinding extends Bindings {
     Get.put(PromoRepository(), permanent: true);
     Get.put(AddressRepository(), permanent: true);
     Get.put(FavoriteRepository(), permanent: true);
-
+    Get.put(ReviewRepository(), permanent: true);
     // Controllers permanents
     Get.put(AuthController(), permanent: true);
   }

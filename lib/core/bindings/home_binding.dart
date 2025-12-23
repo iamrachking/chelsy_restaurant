@@ -6,11 +6,13 @@ import 'package:chelsy_restaurant/data/repositories/dish_repository.dart';
 import 'package:chelsy_restaurant/data/repositories/favorite_repository.dart';
 import 'package:chelsy_restaurant/data/repositories/order_repository.dart';
 import 'package:chelsy_restaurant/data/repositories/promo_repository.dart';
+import 'package:chelsy_restaurant/data/repositories/review_repository.dart';
 import 'package:chelsy_restaurant/presentation/controllers/address_controller.dart';
 import 'package:chelsy_restaurant/presentation/controllers/banner_controller.dart';
 import 'package:chelsy_restaurant/presentation/controllers/favorite_controller.dart';
 import 'package:chelsy_restaurant/presentation/controllers/order_controller.dart';
 import 'package:chelsy_restaurant/presentation/controllers/promo_controller.dart';
+import 'package:chelsy_restaurant/presentation/controllers/review_controller.dart';
 import 'package:get/get.dart';
 import 'package:chelsy_restaurant/presentation/controllers/dish_controller.dart';
 import 'package:chelsy_restaurant/presentation/controllers/cart_controller.dart';
@@ -21,6 +23,7 @@ class HomeBinding extends Bindings {
     Get.put(ApiService(), permanent: true);
     Get.put(DishRepository(), permanent: true);
     Get.put(CartRepository(), permanent: true);
+    Get.put(ReviewRepository(), permanent: true);
     Get.put(BannerRepository(), permanent: true);
     Get.put(FavoriteRepository(), permanent: true);
     Get.put(OrderRepository(), permanent: true);
@@ -33,5 +36,6 @@ class HomeBinding extends Bindings {
     Get.put(OrderController(), permanent: true);
     Get.put(AddressController(), permanent: true);
     Get.put(PromoController(), permanent: true);
+    Get.put(() => ReviewController(), permanent: true);
   }
 }

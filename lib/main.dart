@@ -1,4 +1,6 @@
 import 'package:chelsy_restaurant/core/bindings/tracking_binding.dart';
+import 'package:chelsy_restaurant/data/repositories/review_repository.dart';
+import 'package:chelsy_restaurant/presentation/controllers/review_controller.dart';
 // import 'package:chelsy_restaurant/core/services/location_service.dart';
 import 'package:chelsy_restaurant/presentation/controllers/tracking_controller.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +23,8 @@ import 'package:chelsy_restaurant/presentation/controllers/auth_controller.dart'
 
 import 'package:chelsy_restaurant/presentation/pages/splash/splash_page.dart';
 import 'package:chelsy_restaurant/presentation/pages/initial/initial_page.dart';
+import 'package:chelsy_restaurant/presentation/pages/reviews/create_review_page.dart';
+import 'package:chelsy_restaurant/presentation/pages/reviews/dish_reviews_page.dart';
 import 'package:chelsy_restaurant/presentation/pages/onboarding/onboarding_page.dart';
 import 'package:chelsy_restaurant/presentation/pages/auth/auth_page.dart';
 import 'package:chelsy_restaurant/presentation/pages/auth/login_page.dart';
@@ -66,7 +70,8 @@ Future<void> main() async {
   // Repositories
   Get.put(AuthRepository());
   Get.put(ProfileRepository());
-
+  Get.put<ReviewRepository>(ReviewRepository());
+  Get.put<ReviewController>(ReviewController());
   // Controllers
   Get.put(AuthController());
   Get.lazyPut<TrackingController>(() => TrackingController());
@@ -212,6 +217,24 @@ class MyApp extends StatelessWidget {
           name: AppRoutes.mobileMoneyPayment,
           page: () => const MobileMoneyPaymentPage(),
           binding: OrderBinding(),
+        ),
+        GetPage(
+          name: AppRoutes.createReview,
+          page: () {
+            final args = Get.arguments as Map<String, dynamic>? ?? {};
+            return CreateReviewPage(
+              orderId: args['orderId'] as int?,
+              dishId: args['dishId'] as int?,
+            );
+          },
+        ),
+        GetPage(
+          name: AppRoutes.dishReviews,
+          page: () {
+            final dishId = Get.arguments as int;
+            return DishReviewsPage(dishId: dishId);
+          },
+          binding: HomeBinding(),
         ),
       ],
     );
