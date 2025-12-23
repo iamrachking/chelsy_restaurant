@@ -17,7 +17,6 @@ AHOUANDJINOU Chelsy
 * **Carte Interactive :** Exploration des plats par catégories avec recherche filtrée.
 * **Gestion du Panier :** Ajout rapide, modification des quantités et calcul automatique du total.
 * **Suivi de Commande :** Historique complet et statuts en temps réel (En préparation, Prêt, Livré).
-* **Système d'Avis :** Possibilité de noter et commenter chaque plat pour partager son expérience.
 * **Profil Utilisateur :** Gestion des adresses de livraison, des favoris et des informations personnelles.
 * **Paiement Intégré :** Support de Stripe pour des transactions sécurisées.
 
