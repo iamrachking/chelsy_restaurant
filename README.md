@@ -3,9 +3,11 @@
 Application Flutter pour le restaurant CHELSY avec intégration complète de l'API backend.
 
 ## Groupe 9 (Membres)
+```
 LAWINGNI Abdoul Rachard: iamrachking
 SEHLIN Divin: DivinSln
 AHOUANDJINOU Chelsy
+```
 
 ## 🚀 Installation
 
