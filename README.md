@@ -1,95 +1,53 @@
-# CHELSY Restaurant - Application Mobile
+# CHELSY Restaurant
 
-Application Flutter pour le restaurant CHELSY avec intégration complète de l'API backend.
+**Application mobile restaurant** — Parcours complet : carte, panier, commande et paiement (Stripe, Mobile Money, espèces).
 
-## Groupe 9 (Membres)
-```
-LAWINGNI Abdoul Rachard: iamrachking
-SEHLIN Divin: DivinSln
-AHOUANDJINOU Chelsy
-```
+## Aperçu
 
-## 📱 Présentation de l'Application
+CHELSY Restaurant est l’application mobile du projet. Elle permet de parcourir la carte (catégories et plats), gérer le panier, passer commande et payer (carte, Mobile Money, espèces) sans quitter l’app.
 
-**CHELSY Restaurant** est une solution mobile moderne conçue pour offrir une expérience gastronomique fluide et intuitive. L'application permet aux clients de découvrir la carte, de gérer leurs commandes et d'interagir avec le restaurant en temps réel.
+- **Backend** : API Laravel — [Documentation](https://chelsy-api.cabinet-xaviertermeau.com/api/documentation)
 
-### ✨ Fonctionnalités Clés
-* **Carte Interactive :** Exploration des plats par catégories avec recherche filtrée.
-* **Gestion du Panier :** Ajout rapide, modification des quantités et calcul automatique du total.
-* **Suivi de Commande :** Historique complet et statuts en temps réel (En préparation, Prêt, Livré).
-* **Profil Utilisateur :** Gestion des adresses de livraison, des favoris et des informations personnelles.
-* **Paiement Intégré :** Support de Stripe pour des transactions sécurisées.
+## Captures d’écran
 
-### 🎨 Identité Visuelle
-L'interface a été soigneusement conçue pour refléter l'ambiance chaleureuse du restaurant :
-* **Couleurs :** Une palette élégante de **Marron Foncé** (#301911) et de **Beige Clair** (#FCF6EB).
-* **Design :** Utilisation de Material 3 avec des composants arrondis (12px) pour une esthétique moderne et accueillante.
+ Splash · Onboarding · Connexion · Accueil
 
+| | | | |
+|:---:|:---:|:---:|:---:|
+| ![Splash](assets/screenshots/splash.jpg) | ![Onboarding](assets/screenshots/onboarding.jpg) | ![Connexion](assets/screenshots/login.jpg) | ![Accueil](assets/screenshots/home.jpg) |
 
-## 🚀 Installation
+ Carte · Détail plat · Panier · Commandes · Profil
 
-### 1. Cloner le projet
+| | | | | |
+|:---:|:---:|:---:|:---:|:---:|
+| ![Carte](assets/screenshots/carte.jpg) | ![Détail plat](assets/screenshots/dish_detail.jpg) | ![Panier](assets/screenshots/cart.jpg) | ![Commandes](assets/screenshots/orders.jpg) | ![Profil](assets/screenshots/profil.jpg) |
+
+## Démarrage rapide
 
 ```bash
-git clone  https://github.com/IFRI-DevMobile/chelsy_restaurant.git
+git clone https://github.com/iamrachking/chelsy_restaurant.git
 cd chelsy_restaurant
-```
-
-### 2. Installer les dépendances
-
-```bash
 flutter pub get
-```
-
-### 4. Lancer l'application
-
-```bash
-# Pour Android
 flutter run
-
-# Pour iOS
-flutter run -d ios
-
-# Pour un appareil spécifique
-flutter devices
-flutter run -d <device-id>
 ```
 
+- **Flutter** : SDK ^3.9.2  
+- **Émulateur** : Android Studio ou Xcode ou téléphone
 
-### Structure des dossiers
+## Stack
 
-```
-lib/
-├── core/           # Services, constantes, utilitaires
-├── data/           # Modèles et repositories
-└── presentation/   # Controllers et UI
-```
+- **Flutter** + **GetX** (état & navigation)
+- **Dio** (API, Bearer token)
+- **SharedPreferences** (token, données utilisateur)
+- **Firebase** (notifications push)
+- **Cached Network Image** (images)
+- **Geolocator / Geocoding** (adresses, livraison)
 
-## Commandes Utiles
+## Configuration API
 
-```bash
-# Analyser le code
-flutter analyze
+- **Production** : `https://chelsy-api.cabinet-xaviertermeau.com/api/v1`
+- **Local** : éditer `lib/core/constants/app_constants.dart` (ex. `http://10.0.2.2:8000/api/v1` pour Android).
 
-# Formater le code
-flutter format lib/
+## Licence
 
-# Nettoyer le projet
-flutter clean
-flutter pub get
-
-# Build pour Android
-flutter build apk
-
-# Build pour iOS
-flutter build ios
-```
-
-## Contribution
-
-1. Créer une branche pour votre fonctionnalité
-2. Commiter vos changements
-3. Pousser vers la branche
-4. Créer une Pull Request
-
-
+Projet CHELSY Restaurant.
