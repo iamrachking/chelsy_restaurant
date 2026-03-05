@@ -6,7 +6,7 @@
 
 CHELSY Restaurant est l’application mobile du projet. Elle permet de parcourir la carte (catégories et plats), gérer le panier, passer commande et payer (carte, Mobile Money, espèces) sans quitter l’app.
 
-- **Backend** : API Laravel — [Documentation](https://chelsy-api.cabinet-xaviertermeau.com/api/documentation)
+- **Backend** : API Laravel — [Documentation](https://chelsy-api.cabinet-xaviertermeau.com/api/documentation) · [Code source API](https://github.com/iamrachking/api-chelsy-apk)
 
 ## Captures d’écran
 
