@@ -10,17 +10,23 @@ CHELSY Restaurant est l’application mobile du projet. Elle permet de parcourir
 
 ## Captures d’écran
 
- Splash · Onboarding · Connexion · Accueil
+**Splash · Onboarding · Connexion · Inscription**
 
 | | | | |
 |:---:|:---:|:---:|:---:|
-| ![Splash](assets/screenshots/splash.jpg) | ![Onboarding](assets/screenshots/onboarding.jpg) | ![Connexion](assets/screenshots/login.jpg) | ![Accueil](assets/screenshots/home.jpg) |
+| ![Splash](assets/screenshots/splash.jpg) | ![Onboarding](assets/screenshots/onboarding.jpg) | ![Connexion](assets/screenshots/login.jpg) | ![Inscription](assets/screenshots/register.jpg) |
 
- Carte · Détail plat · Panier · Commandes · Profil
+**Accueil · Catalogue · Détail plat · Panier**
+
+| | | | |
+|:---:|:---:|:---:|:---:|
+| ![Accueil](assets/screenshots/accueil.jpg) | ![Catalogue](assets/screenshots/catalogue.jpg) | ![Détail plat](assets/screenshots/dish_detail.jpg) | ![Panier](assets/screenshots/panier.jpg) |
+
+**Checkout · Livraison · Liste des commandes · Détail commande · Profil**
 
 | | | | | |
 |:---:|:---:|:---:|:---:|:---:|
-| ![Carte](assets/screenshots/carte.jpg) | ![Détail plat](assets/screenshots/dish_detail.jpg) | ![Panier](assets/screenshots/cart.jpg) | ![Commandes](assets/screenshots/orders.jpg) | ![Profil](assets/screenshots/profil.jpg) |
+| ![Checkout](assets/screenshots/checkout.jpg) | ![Livraison](assets/screenshots/livraison.jpg) | ![Liste des commandes](assets/screenshots/commande_liste.jpg) | ![Détail commande](assets/screenshots/detail_commande.jpg) | ![Profil](assets/screenshots/profil.jpg) |
 
 ## Démarrage rapide
 
